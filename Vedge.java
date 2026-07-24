@@ -6,7 +6,7 @@ public class Vedge {
 
     public static ScheduledExecutorService scheduler = new ScheduledThreadPoolExecutor(1);
 
-    public static long startupTimestamp = System.currentTimeMillis();
+    public static long startupTimestamp = Time.nowMs();
 
     public static void start() {
 

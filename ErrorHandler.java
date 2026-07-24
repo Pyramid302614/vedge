@@ -32,7 +32,7 @@ public class ErrorHandler {
     public static void silent(String message) {
 
         silenced.add(new Error(message,true));
-        Resources.appendToContents_safe(silentLogPath,(System.currentTimeMillis()-Vedge.startupTimestamp)+"] " + message);
+        Resources.appendToContents_safe(silentLogPath,(Time.nowMs()-Vedge.startupTimestamp)+"] " + message);
 
     }
     public static void silent(Exception exception) {

@@ -28,7 +28,7 @@ public class JSONFile {
     public long deferTimestamp = -1;
     public static void tickAllDeferTimers() {
 
-        long now = System.currentTimeMillis();
+        long now = Time.nowMs();
         jsonFiles.values().forEach(i -> {
             if(i.deferTimestamp != -1 && now - i.deferTimestamp > deferAmount.toMillis()) {
                 i.syncToDisk();
