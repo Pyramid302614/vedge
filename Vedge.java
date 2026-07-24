@@ -14,9 +14,11 @@ public class Vedge {
         JSONFile config = new JSONFile("vedge_main",";/vedge.json");
         ErrorHandler.makeSilentLog(); // Doesn't require settings file down below
 
+        Settings.syncFromDisk();
+
         // Timers
         scheduler.scheduleAtFixedRate(JSONFile::tickAllDeferTimers,0,30,TimeUnit.SECONDS);
-
+        scheduler.scheduleAtFixedRate(Settings::syncToDisk,1,1,TimeUnit.MINUTES);
 
 
         if(config.get("new_instance").asBoolean()) {

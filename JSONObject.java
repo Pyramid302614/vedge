@@ -4,7 +4,7 @@ import java.util.function.Consumer;
 
 public class JSONObject {
 
-    private final HashMap<String,JSONValue> items = new HashMap<>();
+    private HashMap<String,JSONValue> items = new HashMap<>();
 
     public int length() {
         return items.size();
@@ -67,23 +67,13 @@ public class JSONObject {
         items.put(key,new JSONValue(boolean_));
     }
     public void setValue(String address, JSONValue value) {
-        try {
-//            JSONValue temp = new JSONValue(copy());
-//            Sparry<JSONValue> dissected = new Sparry<>();
-//            String[] split = address.split("\\.");
-//            for(int i = 0; i < split.length; i++) {
-//                dissected.add(temp != null ? temp : new JSONValue(new JSONObject()));
-//                if(i != split.length-1 && (temp == null || temp.asJSONObject().get(split[i]).type != JSONValue.Type.JSONObject)) temp.asJSONObject().set(split[i],new JSONValue(new JSONObject()));
-//                temp = temp.asJSONObject().get(split[i]);
-//            }
-//            dissected.push(value);
-//            for(let i = split.length-1; i >= 0; i--)
-//                dissected[i][split[i]] = dissected[i+1];
-//
-//            return dissected[0];
-        } catch(Exception e) {
-            ErrorHandler.silent("Error setting property for JSONObject: (Address: " + address + ") " + e);
+        // do NOT touch
+        JSONValue buffer = new JSONValue(this); // stores reference and somehow works :sob:
+        String[] parts = address.split("\\.");
+        for(int i = 0; i < parts.length-1; i++) {
+            buffer = buffer.asJSONObject().get(parts[i]);
         }
+        buffer.asJSONObject().set(parts[parts.length-1],value);
     }
 
     public void forEach(Consumer<JSONValue> consumer) {
@@ -99,8 +89,8 @@ public class JSONObject {
     private void forEachValue(BiConsumer<JSONValue,String> consumer, String path) {
         for(String key : keys()) {
             JSONValue value = get(key);
-            if(value.type != JSONValue.Type.JSONObject) consumer.accept(value,path+"."+key);
-            else value.asJSONObject().forEachValue(consumer,path+"."+key);
+            if(value.type != JSONValue.Type.JSONObject) consumer.accept(value,path+key); // path: ___. + name
+            else value.asJSONObject().forEachValue(consumer,path+key+"."); // adds period for next one to keep clean path
         }
     }
 
