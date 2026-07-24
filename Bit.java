@@ -1,0 +1,1 @@
+public record Bit(boolean v) {}
