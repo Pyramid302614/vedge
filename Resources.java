@@ -1,7 +1,4 @@
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Scanner;
 
 public class Resources {
@@ -96,6 +93,55 @@ public class Resources {
             ErrorHandler.silent(e);
         }
     }
+
+    public static BitCluster getRawContents(String path) throws IOException {
+
+        FileInputStream input = new FileInputStream(asFile(path));
+
+        byte[] all = input.readAllBytes();
+
+        input.close();
+
+        return BitCluster.fromBytes(all);
+
+    }
+
+    public static BitCluster getRawContents_safe(String path) {
+        try {
+            return getRawContents(path);
+        } catch(IOException e) {
+            ErrorHandler.silent(e);
+            return null;
+        }
+    }
+
+
+    public static void createFile(String path) throws IOException {
+
+        asFile(path).createNewFile();
+
+    }
+    public static void createFile_safe(String path) {
+        try {
+            createFile(path);
+        } catch(IOException e) {
+            ErrorHandler.silent(e);
+        }
+    }
+
+    public static void createDirectory(String path) throws IOException {
+
+        asFile(path).mkdir();
+
+    }
+    public static void createDirectory_safe(String path) {
+        try {
+            createDirectory(path);
+        } catch(IOException e) {
+            ErrorHandler.silent(e);
+        }
+    }
+
 
 
 

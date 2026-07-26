@@ -1,6 +1,5 @@
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 
 public class ErrorHandler {
 
@@ -14,10 +13,9 @@ public class ErrorHandler {
     }
     public static void makeSilentLog() {
         try {
-            if(!Resources.asFile(":").exists()) Resources.asFile(":").mkdir();
-            if(!Resources.asFile(silentLogPath).createNewFile()) {
-                Resources.overrideContents_safe(silentLogPath,"");
-            }
+            if(!Resources.asFile(":").exists()) Resources.createDirectory(":");
+            Resources.createFile(silentLogPath);
+            Resources.overrideContents_safe(silentLogPath,"");
         } catch(IOException e) {
             System.err.println("Error creating silent log: " + e);
         }
