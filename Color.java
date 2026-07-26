@@ -64,8 +64,8 @@ public class Color {
 
     private void setToPreset(String presetName) {
         for(Vector2<String, int[]> preset : presets) {
-            if(preset.a.equals(presetName)) {
-                rgb = preset.b;
+            if(preset.a().equals(presetName)) {
+                rgb = preset.b();
                 value = false;
             }
         }
@@ -73,7 +73,7 @@ public class Color {
 
     private Vector2<String, int[]> getPreset(String presetName) {
         for(Vector2<String, int[]> preset : presets) {
-            if(preset.a.equals(presetName)) {
+            if(preset.a().equals(presetName)) {
                 return preset;
             }
         }
