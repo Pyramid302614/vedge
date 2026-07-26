@@ -1,7 +1,6 @@
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 @SuppressWarnings("unchecked")
@@ -12,10 +11,11 @@ public class Sparry<T> implements Iterable<T> {
     private T[] v = (T[]) new Object[0]; // TODO: this is broken
 
 
-    public Sparry(T[] a) {
+    public Sparry(T... a) {
         v = a;
         length = a != null ? a.length : 0;
     }
+
     public Sparry() {}
 
 
@@ -30,6 +30,14 @@ public class Sparry<T> implements Iterable<T> {
         n[v.length] = item;
         v = n;
         length = v.length;
+        return this;
+    }
+    public Sparry<T> insert(T item, int index) {
+        add(get(length-1));
+        for(int i = length-2; i >= index; i--) {
+            set(i+1,get(i));
+        }
+        set(index,item);
         return this;
     }
 
@@ -85,6 +93,11 @@ public class Sparry<T> implements Iterable<T> {
 
     public Sparry<T> map(Function<T,T> function) {
         for(int i = 0; i < length; i++) function.apply(v[i]);
+        return this;
+    }
+
+    public Sparry<T> mergeWith(Sparry<T>... sparries) {
+        new Sparry<>(sparries).forEach(s -> s.forEach(this::add));
         return this;
     }
 
