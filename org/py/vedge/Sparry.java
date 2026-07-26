@@ -1,3 +1,5 @@
+package org.py.vedge;
+
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -53,6 +55,9 @@ public class Sparry<T> implements Iterable<T> {
         length = v.length;
         return this;
     }
+    public Sparry<T> remove(T object) {
+        remove(indexOf(object));
+    }
 
 
     public T get(int index) {
@@ -61,6 +66,10 @@ public class Sparry<T> implements Iterable<T> {
         } catch(Exception ignored) {
             return null;
         }
+    }
+    public int indexOf(T object) {
+        for(int i = 0; i < v.length; i++) if(Objects.equals(v[i],object)) return i;
+        return -1;
     }
 
     public Sparry<T> set(int index, T value) {
