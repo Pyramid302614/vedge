@@ -57,6 +57,7 @@ public class Sparry<T> implements Iterable<T> {
     }
     public Sparry<T> remove(T object) {
         remove(indexOf(object));
+        return this;
     }
 
 
