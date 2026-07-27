@@ -1,3 +1,5 @@
+package org.py.vedge;
+
 public class JSONValue {
 
     public enum Type { JSONObject, String }

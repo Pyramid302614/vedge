@@ -1,3 +1,5 @@
+package org.py.vedge;
+
 import javafx.scene.canvas.GraphicsContext;
 
 public class Graphics implements GraphicsAdapter {

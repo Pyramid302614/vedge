@@ -1,3 +1,5 @@
+package org.py.vedge;
+
 public class Error {
 
     public final java.lang.Error value;

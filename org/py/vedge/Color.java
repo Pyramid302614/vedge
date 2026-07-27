@@ -1,3 +1,5 @@
+package org.py.vedge;
+
 public class Color {
 
     @SuppressWarnings("unchecked")

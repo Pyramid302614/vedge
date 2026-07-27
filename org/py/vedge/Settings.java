@@ -1,3 +1,5 @@
+package org.py.vedge;
+
 import java.util.HashMap;
 
 public class Settings {

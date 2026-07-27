@@ -1,3 +1,5 @@
+package org.py.vedge;
+
 import java.util.HashMap;
 
 public class LevelMap2D extends Map2D<LevelTile2D> {

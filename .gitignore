@@ -3,3 +3,5 @@ vedge.iml
 vedge.json
 out
 .idea
+*.tst*
+org/py/vedge_test

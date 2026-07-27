@@ -1,3 +1,5 @@
+package org.py.vedge;
+
 public interface GraphicsAdapter {
 
     void fill(Color color);
