@@ -14,7 +14,7 @@ public class Settings {
     }
 
     private static void compileFile(String name, JSONFile file) {
-        file.asJSONObject().forEachValue((i,p) -> compiled.put(name+"."+p,i));
+        file.asJSONObject().forEach_recursive((i, p) -> compiled.put(name+"."+p,i));
     }
 
     public static void syncFromDisk() {

@@ -16,15 +16,15 @@ public class Vedge {
 
         // Files
         JSONFile config = new JSONFile("vedge_main",";/vedge.json");
-        ErrorHandler.makeSilentLog(); // Doesn't require settings file down below
-
+        Settings.addFile("vedge",config);
+        ErrorHandler.makeSilentLog();
         Settings.syncFromDisk();
 
 
         // Timers
-        scheduler.scheduleAtFixedRate(JSONFile::tickAllDeferTimers,0,Time.msFromString(config.get("timers.tick_defer_timers").asString()),TimeUnit.MILLISECONDS);
-        scheduler.scheduleAtFixedRate(Settings::syncToDisk,Time.msFromString(config.get("timers.sync_settings").asString()),Time.msFromString(config.get("timers.sync_settings").asString()),TimeUnit.MILLISECONDS);
-        scheduler.scheduleAtFixedRate(IterativeEaser::tickAll,0,Time.msFromString(config.get("timers.tick_iterative_timers").asString()),TimeUnit.MILLISECONDS);
+        scheduler.scheduleAtFixedRate(JSONFile::tickAllDeferTimers,0,Time.msFromString(Settings.get("vedge.timers.tick_defer_timers").asString()),TimeUnit.MILLISECONDS);
+        scheduler.scheduleAtFixedRate(Settings::syncToDisk,Time.msFromString(Settings.get("vedge.timers.sync_settings").asString()),Time.msFromString(Settings.get("vedge.timers.sync_settings").asString()),TimeUnit.MILLISECONDS);
+        scheduler.scheduleAtFixedRate(IterativeEaser::tickAll,0,Time.msFromString(Settings.get("vedge.timers.tick_iterative_timers").asString()),TimeUnit.MILLISECONDS);
 
 
         if(config.get("new_instance").asBoolean()) {
