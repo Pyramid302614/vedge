@@ -2,7 +2,7 @@ package org.py.vedge;
 
 public class JSONValue {
 
-    public enum Type { JSONObject, String }
+    public enum Type { JSONObject, String, NonString }
 
     public Type type;
     private JSONObject jsonObjectValue;
@@ -33,15 +33,15 @@ public class JSONValue {
         stringValue = string;
     }
     public JSONValue(int integer) {
-        type = Type.String;
+        type = Type.NonString;
         stringValue = Integer.toString(integer);
     }
     public JSONValue(double double_) {
-        type = Type.String;
+        type = Type.NonString;
         stringValue = Double.toString(double_);
     }
     public JSONValue(boolean boolean_) {
-        type = Type.String;
+        type = Type.NonString;
         stringValue = Boolean.toString(boolean_);
     }
 
@@ -78,7 +78,7 @@ public class JSONValue {
     public String toString() {
         return switch(type) {
             case JSONObject -> JSON.stringify(jsonObjectValue, 2);
-            case String -> stringValue;
+            case String, NonString -> stringValue;
         };
     }
 

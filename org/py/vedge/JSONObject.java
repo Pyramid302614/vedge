@@ -85,14 +85,14 @@ public class JSONObject {
     }
 
     // Recursive logic
-    public void forEachValue(BiConsumer<JSONValue,String> consumer) {
-        forEachValue(consumer,"");
+    public void forEach_recursive(BiConsumer<JSONValue,String> consumer) {
+        forEach_recursive(consumer,"");
     }
-    private void forEachValue(BiConsumer<JSONValue,String> consumer, String path) {
+    private void forEach_recursive(BiConsumer<JSONValue,String> consumer, String path) {
         for(String key : keys()) {
             JSONValue value = get(key);
             if(value.type != JSONValue.Type.JSONObject) consumer.accept(value,path+key); // path: ___. + name
-            else value.asJSONObject().forEachValue(consumer,path+key+"."); // adds period for next one to keep clean path
+            else value.asJSONObject().forEach_recursive(consumer,path+key+"."); // adds period for next one to keep clean path
         }
     }
 

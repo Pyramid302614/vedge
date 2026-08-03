@@ -80,4 +80,9 @@ public class JSONFile {
         Resources.overrideContents_safe(path,JSON.stringify(contents,2));
     }
 
+    @Override
+    public String toString() {
+        return contents.toString();
+    }
+
 }
