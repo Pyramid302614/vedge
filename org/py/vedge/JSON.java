@@ -1,8 +1,5 @@
 package org.py.vedge;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 public class JSON {
 
     public static String stringify(JSONObject object, int space) {
@@ -34,51 +31,6 @@ public class JSON {
     }
 
     public static JSONObject parse(String string) {
-
-        if(string == null) return new JSONObject();
-
-        return nestedParse(string.replaceAll(" ","").replaceAll("\n",""));
-
-    }
-
-    // STRING MUST BE WHITESPACE-LESS
-    private static JSONObject nestedParse(String string) {
-
-        System.out.println(string);
-
-        JSONObject value = new JSONObject();
-
-        Pattern itemsPattern = Pattern.compile("[^,]+:\\{[^}]+}|[^,]+");
-        Matcher matcher = itemsPattern.matcher(string.substring(1,string.length()-1));
-        while(matcher.find()) {
-            String item = matcher.group();
-            if(item.split(":").length >= 2) {
-                String propertyName = item.split(":")[0]
-                        .replaceAll("\\\\\"","&&&&")
-                        .replaceAll("\"","")
-                        .replaceAll("&&&&","\"");
-                if(item.split(":")[1].charAt(0) == '{') {
-//                    System.out.println("OBJECT: " + propertyName + " | ITEM: " + item.substring(item.split(":")[0].length()+1));
-                    value.set(propertyName, nestedParse(item.substring(item.split(":")[0].length()+1)));
-                }
-                else {
-                    String valueContent = item.split(":")[1]
-                            .replaceAll("\\\\\"","&&&&")
-                            .replaceAll("\"","")
-                            .replaceAll("&&&&","\"");
-//                    System.out.println("VALUE: " + propertyName + " | ITEM : " + valueContent);
-                    value.set(propertyName,valueContent);
-                }
-            }
-        }
-
-        return value;
-
-
-
-    }
-
-    public static JSONObject Parse(String string) {
 
         JSONObject obj = new JSONObject();
         String str = string
@@ -119,7 +71,7 @@ public class JSON {
                 case ',':
                     if(type != JSONValue.Type.String) {
                         write = false;
-                        JSONValue value = type == JSONValue.Type.JSONObject ? new JSONValue(Parse(buffer)) : new JSONValue(buffer);
+                        JSONValue value = type == JSONValue.Type.JSONObject ? new JSONValue(parse(buffer)) : new JSONValue(buffer);
                         value.type = type;
                         obj.set(propertyBuffer,value);
                         buffer = "";
@@ -168,9 +120,11 @@ public class JSON {
 
         }
 
-        JSONValue value = type == JSONValue.Type.JSONObject ? new JSONValue(Parse(buffer)) : new JSONValue(buffer);
-        value.type = type;
-        obj.set(propertyBuffer,value);
+        if(!propertyBuffer.isEmpty()) {
+            JSONValue value = type == JSONValue.Type.JSONObject ? new JSONValue(parse(buffer)) : new JSONValue(buffer);
+            value.type = type;
+            obj.set(propertyBuffer,value);
+        }
 
         return obj;
 
