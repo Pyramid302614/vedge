@@ -1,5 +1,6 @@
 package org.py.vedge;
 
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -12,15 +13,13 @@ public class Window extends Application {
 
     private static boolean windowInitialized = false;
 
-    public static final JSONObject windowConfig = JSONFile.file("vedge_main").o("window");
-
     public static Point position = new Point(
-            windowConfig.get("start_size.x").asInteger(),
-            windowConfig.get("start_size.y").asInteger()
+            Settings.get("vedge.window.start_position.x").asInteger(),
+            Settings.get("vedge.window.start_position.y").asInteger()
     );
     public static Dimension size = new Dimension(
-            windowConfig.get("start_size.w").asInteger(),
-            windowConfig.get("start_size.h").asInteger()
+            Settings.get("vedge.window.start_size.w").asInteger(),
+            Settings.get("vedge.window.start_size.h").asInteger()
     );
 
     @Override
@@ -33,14 +32,20 @@ public class Window extends Application {
         StackPane root = new StackPane(canvas);
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
-        primaryStage.setTitle(windowConfig.get("name").asString());
+        primaryStage.setTitle(Settings.get("vedge.window.name").asString());
 
-        if(windowConfig.get("exit_on_close").asBoolean())
+        if(Settings.get("vedge.window.exit_on_close").asBoolean())
             primaryStage.setOnCloseRequest(e -> {
                 System.exit(0);
             });
 
-
+        AnimationTimer frameTimer = new AnimationTimer() {
+            @Override
+            public void handle(long l) {
+                Frame.frame();
+            }
+        };
+        frameTimer.start();
 
         primaryStage.show();
 

@@ -2,7 +2,6 @@ package org.py.vedge;
 
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 public class Vedge {
 
@@ -22,9 +21,10 @@ public class Vedge {
 
 
         // Timers
-        scheduler.scheduleAtFixedRate(JSONFile::tickAllDeferTimers,0,Time.msFromString(Settings.get("vedge.timers.tick_defer_timers").asString()),TimeUnit.MILLISECONDS);
-        scheduler.scheduleAtFixedRate(Settings::syncToDisk,Time.msFromString(Settings.get("vedge.timers.sync_settings").asString()),Time.msFromString(Settings.get("vedge.timers.sync_settings").asString()),TimeUnit.MILLISECONDS);
-        scheduler.scheduleAtFixedRate(IterativeEaser::tickAll,0,Time.msFromString(Settings.get("vedge.timers.tick_iterative_timers").asString()),TimeUnit.MILLISECONDS);
+        Timers.create(new Process(JSONFile::tickAllDeferTimers,"Tick Defer Timers","tick_defer_timers"),Settings.get("vedge.timers.tick_defer_timers").asString());
+        Timers.create(new Process(Settings::syncToDisk,"Sync Settings","sync_settings"),Settings.get("vedge.timers.sync_settings").asString());
+        Timers.create(new Process(IterativeEaser::tickAll,"Tick Iterative Timers","tick_iterative_timers"),Settings.get("vedge.timers.tick_iterative_timers").asString());
+        Timers.create(new Process(Observer::tickAll,"Tick Observers","tick_observers"),Settings.get("vedge.timers.tick_observers").asString());
 
 
         if(config.get("new_instance").asBoolean()) {
