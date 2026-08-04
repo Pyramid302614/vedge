@@ -1,24 +1,27 @@
 package org.py.vedge;
 
+import java.util.HashMap;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 public class Observer<T> {
 
-    public static Sparry<Observer> observers = new Sparry<>();
+    public static HashMap<Integer,Observer> observers = new HashMap<>(); // HashMap<ID,Observer>
 
     private T previousValue;
     private final Supplier<T> get;
     private final BiConsumer<T,T> onChange;
-    private int index;
+    public boolean changedLastTick = false;
+    private int id;
 
     private void add() {
-        index = observers.length;
-        observers.add(this);
+        id = observers.size();
+        observers.put(id,this);
     }
-    private void remove() {
-        observers.remove(index);
+    public Observer<T> remove() {
+        observers.remove(id);
+        return this;
     }
 
     public Observer(Supplier<T> get, BiConsumer<T,T> onChange) { // BiConsumer<Old,New>
@@ -27,19 +30,17 @@ public class Observer<T> {
         add();
     }
 
-    public void delete() {
-        remove();
-    }
-
     public void tick() {
         T newValue = get.get();
+        if(previousValue == null) { previousValue = newValue; return; } // Prevents first-tick firing
         if(!Objects.equals(previousValue,newValue)) {
             onChange.accept(previousValue,newValue);
             previousValue = newValue;
-        }
+            changedLastTick = true;
+        } else changedLastTick = false;
     }
     public static void tickAll() {
-        observers.forEach(Observer::tick);
+        observers.values().forEach(Observer::tick);
     }
 
 }

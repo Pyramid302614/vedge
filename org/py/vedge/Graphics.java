@@ -9,6 +9,12 @@ public class Graphics implements GraphicsAdapter {
     private Color fill;
     private Color stroke;
 
+    public void fill(int r, int g, int b, int a) {
+        fill(new Color(r,g,b,a));
+    }
+    public void fill(int r, int g, int b) {
+        fill(new Color(r,g,b));
+    }
     public void fill(Color color) {
         fill = color;
         gc.setFill(color.toColorFX());

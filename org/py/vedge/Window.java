@@ -13,6 +13,8 @@ public class Window extends Application {
 
     private static boolean windowInitialized = false;
 
+    public static Graphics graphics;
+
     public static Point position = new Point(
             Settings.get("vedge.window.start_position.x").asInteger(),
             Settings.get("vedge.window.start_position.y").asInteger()
@@ -46,6 +48,8 @@ public class Window extends Application {
             }
         };
         frameTimer.start();
+
+        graphics = new Graphics(canvas.getGraphicsContext2D());
 
         primaryStage.show();
 

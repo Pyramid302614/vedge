@@ -34,6 +34,10 @@ public class Sparry<T> implements Iterable<T> {
         length = v.length;
         return this;
     }
+    public Sparry<T> addAll(T... item) {
+        for(T i : item) add(i);
+        return this;
+    }
     public Sparry<T> insert(T item, int index) {
         add(get(length-1));
         for(int i = length-2; i >= index; i--) {

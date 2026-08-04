@@ -26,6 +26,11 @@ public class Vedge {
         Timers.create(new Process(IterativeEaser::tickAll,"Tick Iterative Timers","tick_iterative_timers"),Settings.get("vedge.timers.tick_iterative_timers").asString());
         Timers.create(new Process(Observer::tickAll,"Tick Observers","tick_observers"),Settings.get("vedge.timers.tick_observers").asString());
 
+        Frame.frameProcesses(
+                new Process(Entity2D::tickAll,"Tick Entities","tick_entities"),
+                new Process(Entity2D::collisionAll,"Entity Collision","collision_entities"),
+                new Process(Entity2D::renderAll,"Render Entities","render_entities")
+        );
 
         if(config.get("new_instance").asBoolean()) {
             config.setDeferSync("new_instance",new JSONValue(false));

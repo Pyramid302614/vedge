@@ -4,18 +4,18 @@ import java.util.HashMap;
 
 public class LevelMap2D extends Map2D<LevelTile2D> {
 
-    public static Sparry<LevelMap2D> ticked = new Sparry<>();
+    public static LevelMap2D current;
     public static HashMap<String,LevelMap2D> cached = new HashMap<>();
     public static HashMap<String,String> paths = new HashMap<>();
     public static HashMap<String,LevelTileSet> tileSets = new HashMap<>();
 
     public void load() {
         cached.put(name,this);
-        ticked.add(this);
+        current = this;
     }
     public static void load(String name) {
         if(cached.containsKey(name)) {
-            ticked.add(cached.get(name));
+            current = cached.get(name);
             return;
         }
         if(!paths.containsKey(name)) {
@@ -24,21 +24,21 @@ public class LevelMap2D extends Map2D<LevelTile2D> {
         }
         LevelMap2D map = LevelMap2D.fromFile(paths.get(name),tileSets.get(name));
         cached.put(name,map);
-        ticked.add(map);
+        current = map;
     }
-    public static void unloadAll() {
-        ticked.clear();
+    public static void unloadCurrent() {
+        current = null;
     }
     public static void clearCache() {
         cached.clear();
     }
 
-    public static void tickAllLevelMap2Ds() {
-        ticked.forEach(LevelMap2D::tick);
+    public static void tickCurrent() {
+        current.tick();
     }
 
     public void tick() {
-        forEach(LevelTile2D::runTick);
+        forEach(LevelTile2D::tick);
     }
 
 

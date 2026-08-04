@@ -21,4 +21,10 @@ public class Map2D<T> {
         map.forEach(i -> i.forEach(consumer));
     }
 
+    public T[] flatten() {
+        Sparry<T> result = new Sparry<>();
+        map.forEach(i -> i.forEach(result::add));
+        return result.toArray();
+    }
+
 }
