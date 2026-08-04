@@ -20,6 +20,7 @@ public class JSON {
                 case JSONObject -> output.append("\"").append(key).append("\":").append(!space.isEmpty() ? " " : "").append(nestedStringify(value.asJSONObject(), currentIndent+space, space));
                 case String -> output.append("\"").append(key).append("\":").append(!space.isEmpty() ? " " : "").append("\"").append(value.asString()).append("\"");
                 case NonString -> output.append("\"").append(key).append("\":").append(!space.isEmpty() ? " " : "").append(value.asString());
+                case Array -> output.append("\"").append(key).append("\":").append(!space.isEmpty() ? " " : "").append(value.asArray().length == 0 ? "[]" : value.asArray().toString());
             }
 
             output.append(i != object.length() - 1 ? ( ",\n" + currentIndent + space ) : ( "\n" + currentIndent + "}" ));
@@ -54,8 +55,8 @@ public class JSON {
             char c = str.charAt(i);
             char nc = i != str.length()-1 ? str.charAt(i+1) : (char)0;
 
-            if(type == JSONValue.Type.JSONObject && c == '{') scope++;
-            else if(type == JSONValue.Type.JSONObject && c == '}') scope--;
+            if((type == JSONValue.Type.JSONObject && c == '{') || (type == JSONValue.Type.Array && c == '[')) scope++;
+            else if((type == JSONValue.Type.JSONObject && c == '}') || (type == JSONValue.Type.Array && c == ']')) scope--;
 
             if(scope == 0) switch(c) {
 
@@ -71,7 +72,9 @@ public class JSON {
                 case ',':
                     if(type != JSONValue.Type.String) {
                         write = false;
-                        JSONValue value = type == JSONValue.Type.JSONObject ? new JSONValue(parse(buffer)) : new JSONValue(buffer);
+                        JSONValue value =
+                                type == JSONValue.Type.JSONObject ? new JSONValue(parse(buffer)) :
+                                        (type == JSONValue.Type.Array ? parseArray(buffer) : new JSONValue(buffer));
                         value.type = type;
                         obj.set(propertyBuffer,value);
                         buffer = "";
@@ -103,6 +106,9 @@ public class JSON {
                         case '{':
                             type = JSONValue.Type.JSONObject;
                             break;
+                        case '[':
+                            type = JSONValue.Type.Array;
+                            break;
                         default:
                             type = JSONValue.Type.NonString;
                             break;
@@ -121,12 +127,35 @@ public class JSON {
         }
 
         if(!propertyBuffer.isEmpty()) {
-            JSONValue value = type == JSONValue.Type.JSONObject ? new JSONValue(parse(buffer)) : new JSONValue(buffer);
+            JSONValue value =
+                    type == JSONValue.Type.JSONObject ? new JSONValue(parse(buffer)) :
+                            (type == JSONValue.Type.Array ? parseArray(buffer) : new JSONValue(buffer));
             value.type = type;
             obj.set(propertyBuffer,value);
         }
 
         return obj;
+
+    }
+
+    public static JSONValue parseArray(String array) {
+
+        array = array.replaceAll("\n","").replaceAll(" ","");
+
+        if(array.equals("[]")) return new JSONValue(new JSONValue[0]);
+
+        Sparry<JSONValue> output = new Sparry<>();
+
+        for(String item : array.substring(1,array.length()-1).split(",")) {
+            if(item.charAt(0) == '"') output.add(new JSONValue(item.substring(1,item.length()-1)));
+            else {
+                JSONValue value = new JSONValue(item);
+                value.type = JSONValue.Type.NonString;
+                output.add(value);
+            }
+        }
+
+        return new JSONValue(output);
 
     }
 

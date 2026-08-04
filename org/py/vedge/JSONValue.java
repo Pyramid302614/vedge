@@ -2,11 +2,12 @@ package org.py.vedge;
 
 public class JSONValue {
 
-    public enum Type { JSONObject, String, NonString }
+    public enum Type { JSONObject, String, NonString, Array }
 
     public Type type;
     private JSONObject jsonObjectValue;
     private String stringValue;
+    private Sparry<JSONValue> arrayValue;
 
     public JSONObject asJSONObject() {
         return jsonObjectValue;
@@ -23,6 +24,7 @@ public class JSONValue {
     public boolean asBoolean() {
         return Boolean.parseBoolean(stringValue);
     }
+    public Sparry<JSONValue> asArray() { return arrayValue; }
 
     public JSONValue(JSONObject object) {
         type = Type.JSONObject;
@@ -43,6 +45,14 @@ public class JSONValue {
     public JSONValue(boolean boolean_) {
         type = Type.NonString;
         stringValue = Boolean.toString(boolean_);
+    }
+    public JSONValue(JSONValue[] array) {
+        type = Type.Array;
+        this.arrayValue = new Sparry<>(array);
+    }
+    public JSONValue(Sparry<JSONValue> array) {
+        type = Type.Array;
+        this.arrayValue = array;
     }
 
 
@@ -79,6 +89,7 @@ public class JSONValue {
         return switch(type) {
             case JSONObject -> JSON.stringify(jsonObjectValue, 2);
             case String, NonString -> stringValue;
+            case Array -> arrayValue.toString();
         };
     }
 

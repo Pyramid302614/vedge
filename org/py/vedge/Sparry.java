@@ -119,7 +119,7 @@ public class Sparry<T> implements Iterable<T> {
     public String toString() {
         StringBuilder r = new StringBuilder("[ ");
         for(int i = 0; i < v.length; i++) {
-            r.append(v[i]).append(( i != v.length - 1 ) ? ", " : "");
+            r.append(v[i].toString()).append(( i != v.length - 1 ) ? ", " : "");
         }
         r.append(" ]");
         return r.toString();
