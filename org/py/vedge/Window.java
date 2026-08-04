@@ -24,6 +24,11 @@ public class Window extends Application {
             Settings.get("vedge.window.start_size.h").asInteger()
     );
 
+    public static Stage primaryStage;
+    public static Scene primaryScene;
+    public static StackPane root;
+    public static Canvas canvas;
+
     @Override
     public void start(Stage primaryStage) { // TODO: on close, exit or something
 
@@ -35,6 +40,11 @@ public class Window extends Application {
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.setTitle(Settings.get("vedge.window.name").asString());
+
+        Window.primaryStage = primaryStage;
+        Window.primaryScene = scene;
+        Window.root = root;
+        Window.canvas = canvas;
 
         if(Settings.get("vedge.window.exit_on_close").asBoolean())
             primaryStage.setOnCloseRequest(e -> {
@@ -51,6 +61,8 @@ public class Window extends Application {
 
         graphics = new Graphics(canvas.getGraphicsContext2D());
 
+        onInitFinishes.forEach(Runnable::run);
+
         primaryStage.show();
 
     }
@@ -58,6 +70,11 @@ public class Window extends Application {
     public static void go() {
         new Window();
         Application.launch();
+    }
+
+    private static Sparry<Runnable> onInitFinishes = new Sparry<>();
+    public static void addOnInitFinish(Runnable runnable) {
+        onInitFinishes.add(runnable);
     }
 
 }

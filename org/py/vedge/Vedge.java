@@ -11,8 +11,6 @@ public class Vedge {
 
     public static void start() {
 
-        Time.initializeUnits();
-
         // Files
         JSONFile config = new JSONFile("vedge_main",";/vedge.json");
         Settings.addFile("vedge",config);
@@ -20,12 +18,18 @@ public class Vedge {
         Settings.syncFromDisk();
 
 
-        // Timers
+        // Timers / Time
+        Time.initializeUnits();
         Timers.create(new Process(JSONFile::tickAllDeferTimers,"Tick Defer Timers","tick_defer_timers"),Settings.get("vedge.timers.tick_defer_timers").asString());
         Timers.create(new Process(Settings::syncToDisk,"Sync Settings","sync_settings"),Settings.get("vedge.timers.sync_settings").asString());
         Timers.create(new Process(IterativeEaser::tickAll,"Tick Iterative Timers","tick_iterative_timers"),Settings.get("vedge.timers.tick_iterative_timers").asString());
         Timers.create(new Process(Observer::tickAll,"Tick Observers","tick_observers"),Settings.get("vedge.timers.tick_observers").asString());
 
+        // Input
+        Key.compileKeyGroups();
+        Window.addOnInitFinish(InputListener::configureMainListener);
+
+        // Frame processes
         Frame.frameProcesses(
                 new Process(Entity2D::tickAll,"Tick Entities","tick_entities"),
                 new Process(Entity2D::collisionAll,"Entity Collision","collision_entities"),

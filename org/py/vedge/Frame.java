@@ -5,7 +5,7 @@ public class Frame {
     private static final Sparry<Process> preFrameTimers = new Sparry<>();
     private static final Sparry<Process> postFrameTimers = new Sparry<>();
 
-    private static Process[] frameTimers;
+    private static Process[] frameTimers = new Process[0];
 
     public static void onNewFrame(Process process) {
         preFrameTimers.add(process);

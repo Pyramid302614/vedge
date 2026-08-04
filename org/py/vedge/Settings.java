@@ -44,6 +44,9 @@ public class Settings {
         return compiled.get(settingAddress);
 
     }
+    public static JSONFile getFile(String name) {
+        return files.get(name);
+    }
 
     // Doesn't read cache, goes straight for the money
     public static JSONValue fetch(String settingAddress) {
