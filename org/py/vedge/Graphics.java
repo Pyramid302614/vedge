@@ -2,12 +2,14 @@ package org.py.vedge;
 
 import javafx.scene.canvas.GraphicsContext;
 
+import java.util.Arrays;
+
 public class Graphics implements GraphicsAdapter {
 
     private final GraphicsContext gc;
 
-    private Color fill;
-    private Color stroke;
+    private Color fill = Color.ORANGE;
+    private Color stroke = Color.BLACK;
 
     public void fill(int r, int g, int b, int a) {
         fill(new Color(r,g,b,a));
@@ -23,32 +25,28 @@ public class Graphics implements GraphicsAdapter {
         stroke = color;
         gc.setStroke(color.toColorFX());
     }
+    public void strokeWeight(double weight) {
+        gc.setLineWidth(weight);
+    }
 
     public void rect(double x, double y, double w, double h) {
-        if(stroke.alpha() == 0) {
-            gc.fillRect(x,y,w,h);
-        } else if(fill.alpha() == 0) {
-            gc.strokeRect(x,y,w,h);
-        } else {
-            gc.rect(x,y,w,h);
-        }
+        if(fill.alpha() != 0) gc.fillRect(x,y,w,h);
+        if(stroke.alpha() != 0) gc.strokeRect(x,y,w,h);
     }
 
     public void ellipse(double x, double y, double w, double h) {
-        if(stroke.alpha() != 0) {
-            gc.strokeOval(x,y,w,h);
-        } else if(fill.alpha() != 0) {
-            gc.fillOval(x,y,w,h);
-        }
+        if(fill.alpha() != 0) gc.fillOval(x,y,w,h);
+        if(stroke.alpha() != 0) gc.fillOval(x,y,w,h);
     }
 
     public void image(Image image, double x, double y, double w, double h) {
 
     }
 
-    public void polyStart() {}
-    public void vertex(double x, double y) {}
-    public void polyEnd() {}
+    public void polygon(double[] allX, double[] allY) {
+        if(fill.alpha() != 0) gc.fillPolygon(allX,allY,allX.length);
+        if(stroke.alpha() != 0) gc.strokePolygon(allX,allY,allX.length);
+    }
 
     public Graphics(GraphicsContext gc) {
 

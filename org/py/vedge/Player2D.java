@@ -5,6 +5,7 @@ public class Player2D extends Entity2D {
     public static Player2D me;
 
     public Player2D setAsMe() {
+        state = State.Stained;
         me = this;
         return this;
     }
@@ -13,5 +14,13 @@ public class Player2D extends Entity2D {
     }
 
 
+
+    public void playerTick() {}
+    @Override
+    public void entityTick() {
+
+        playerTick();
+
+    }
 
 }

@@ -1,18 +1,50 @@
 package org.py.vedge;
 
-import java.util.function.Consumer;
-
 public class Token {
 
     public Position2D position = new Position2D(0,0);
-    public Polygon2D hitbox;
+    public Position2D previousPosition = new Position2D(0,0);
 
-    public void render(Graphics g) {}
-    public void collision(Token[] tokens) {}
-    public void tick() {}
+    public Hitbox hitbox = new Hitbox(this);
 
-    public static Consumer<Token[]> COLLISION_SOLID = g -> {
+    public double TCX(double x) {
+        return position.x + x;
+    }
+    public double TCY(double y) {
+        return position.y + y;
+    }
+    public double TRX(double x) {
+        return x - position.x;
+    }
+    public double TRY(double y) {
+        return y - position.y;
+    }
 
-    };
+    public void tokenRender(Graphics g) {}
+    public void render(Graphics g) {
+
+        tokenRender(g);
+
+    }
+
+
+    public static Sparry<Token> staticTokens = new Sparry<>();
+    public static Sparry<Token> dynamicTokens = new Sparry<>();
+
+    public void onCollide(Token[] colliders) {}
+
+
+    public void tick() {
+
+        previousPosition = position.copy();
+        position.tick();
+        tokenTick();
+
+    }
+    public void tokenTick() {}
+
+    public static void collisionAll() {
+
+    }
 
 }

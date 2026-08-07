@@ -96,31 +96,34 @@ public class JSON {
             if(scope == 0) switch(c) {
 
                 case ':':
-                    write = true;
-                    mode = true;
-                    switch(nc) {
-                        case '"':
-                            type = JSONValue.Type.String;
-                            i++;
-                            break;
-                        case '{':
-                            type = JSONValue.Type.JSONObject;
-                            break;
-                        case '[':
-                            type = JSONValue.Type.Array;
-                            break;
-                        default:
-                            type = JSONValue.Type.NonString;
-                            break;
+                    if(buffer.isEmpty()) {
+                        write = true;
+                        mode = true;
+                        switch(nc) {
+                            case '"':
+                                type = JSONValue.Type.String;
+                                i++;
+                                break;
+                            case '{':
+                                type = JSONValue.Type.JSONObject;
+                                break;
+                            case '[':
+                                type = JSONValue.Type.Array;
+                                break;
+                            default:
+                                type = JSONValue.Type.NonString;
+                                break;
+                        }
                     }
                     break;
 
                 case ',':
-                    write = true;
-                    mode = false;
-                    buffer = "";
-                    break;
-
+                    if(buffer.isEmpty()) {
+                        write = true;
+                        mode = false;
+                        buffer = "";
+                        break;
+                    }
 
             }
 

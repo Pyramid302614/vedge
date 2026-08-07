@@ -15,9 +15,7 @@ public interface GraphicsAdapter {
     void rect(double x, double y, double w, double h);
     void ellipse(double x, double y, double rw, double rh);
 
-    void polyStart();
-    void vertex(double x, double y);
-    void polyEnd();
+    void polygon(double[] allX, double[] allY);
 
     void image(Image image, double x, double y, double w, double h);
 

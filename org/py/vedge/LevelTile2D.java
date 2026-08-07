@@ -6,6 +6,7 @@ public final class LevelTile2D extends Token {
 
     public LevelTile2D(int key) {
         this.key = key;
+        staticTokens.add(this);
     }
 
 

@@ -4,7 +4,8 @@ import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.awt.*;
@@ -24,36 +25,45 @@ public class Window extends Application {
             Settings.get("vedge.window.start_size.h").asInteger()
     );
 
-    public static Stage primaryStage;
-    public static Scene primaryScene;
-    public static StackPane root;
+    public static Stage stage;
+    public static Scene scene;
+    public static Pane root;
     public static Canvas canvas;
 
+    public static boolean renderBackground = true;
+
     @Override
-    public void start(Stage primaryStage) { // TODO: on close, exit or something
+    public void start(Stage stage) { // TODO: on close, exit or something
 
         if(windowInitialized) return;
         else windowInitialized = true;
 
+        Pane root = new Pane();
         Canvas canvas = new Canvas(size.width,size.height);
-        StackPane root = new StackPane(canvas);
-        Scene scene = new Scene(root);
-        primaryStage.setScene(scene);
-        primaryStage.setTitle(Settings.get("vedge.window.name").asString());
 
-        Window.primaryStage = primaryStage;
-        Window.primaryScene = scene;
+        root.getChildren().add(canvas);
+        Scene scene = new Scene(root,size.width,size.height,Color.WHITE);
+
+        stage.setTitle(Settings.get("vedge.window.name").asString());
+        stage.setScene(scene);
+
+        Window.stage = stage;
+        Window.scene = scene;
         Window.root = root;
         Window.canvas = canvas;
 
         if(Settings.get("vedge.window.exit_on_close").asBoolean())
-            primaryStage.setOnCloseRequest(e -> {
+            stage.setOnCloseRequest(e -> {
                 System.exit(0);
             });
 
         AnimationTimer frameTimer = new AnimationTimer() {
             @Override
             public void handle(long l) {
+                if(renderBackground) {
+                    canvas.getGraphicsContext2D().setFill(Color.WHITE);
+                    canvas.getGraphicsContext2D().fillRect(0,0,size.width,size.width);
+                }
                 Frame.frame();
             }
         };
@@ -63,7 +73,7 @@ public class Window extends Application {
 
         onInitFinishes.forEach(Runnable::run);
 
-        primaryStage.show();
+        stage.show();
 
     }
 

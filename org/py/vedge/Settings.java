@@ -41,7 +41,9 @@ public class Settings {
 
     public static JSONValue get(String settingAddress) {
 
-        return compiled.get(settingAddress);
+        JSONValue value = compiled.get(settingAddress);
+        if(value == null) throw new RuntimeException("Cannot find setting: " + settingAddress);
+        else return value;
 
     }
     public static JSONFile getFile(String name) {

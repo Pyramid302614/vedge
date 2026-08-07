@@ -34,8 +34,12 @@ public class Sparry<T> implements Iterable<T> {
         length = v.length;
         return this;
     }
-    public Sparry<T> addAll(T... item) {
-        for(T i : item) add(i);
+    public Sparry<T> addAll(T... items) {
+        for(T i : items) add(i);
+        return this;
+    }
+    public Sparry<T> addAll(Sparry<T> items) {
+        items.forEach(this::add);
         return this;
     }
     public Sparry<T> insert(T item, int index) {
@@ -48,6 +52,8 @@ public class Sparry<T> implements Iterable<T> {
     }
 
     public Sparry<T> remove(int index) {
+        if(index == -1) return this;
+        if(v.length == 0) return this;
         T[] n = (T[]) new Object[v.length-1];
         int f = 0;
         for(int i = 0; i < v.length-1; i++) {
@@ -119,7 +125,7 @@ public class Sparry<T> implements Iterable<T> {
     public String toString() {
         StringBuilder r = new StringBuilder("[ ");
         for(int i = 0; i < v.length; i++) {
-            r.append(v[i].toString()).append(( i != v.length - 1 ) ? ", " : "");
+            r.append(v[i]).append(( i != v.length - 1 ) ? ", " : "");
         }
         r.append(" ]");
         return r.toString();
