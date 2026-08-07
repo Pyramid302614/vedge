@@ -30,6 +30,9 @@ public class Token {
 
     public static Sparry<Token> staticTokens = new Sparry<>();
     public static Sparry<Token> dynamicTokens = new Sparry<>();
+    public static boolean doCollisionForNonMainDynamicTokens = Settings.get("vedge.collision.collide_non_main_tokens").asBoolean();
+
+    public boolean mainCollider = false;
 
     public void onCollide(Token[] colliders) {}
 
@@ -44,6 +47,7 @@ public class Token {
     public void tokenTick() {}
 
     public static void collisionAll() {
+
 
     }
 

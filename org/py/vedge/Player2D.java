@@ -7,6 +7,7 @@ public class Player2D extends Entity2D {
     public Player2D setAsMe() {
         state = State.Stained;
         me = this;
+        mainCollider = true;
         return this;
     }
     public static void setAsMe(Player2D me) {
