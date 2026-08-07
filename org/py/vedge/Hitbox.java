@@ -8,12 +8,12 @@ public class Hitbox extends Polygon2D {
         this.owner = owner;
     }
 
-    public Sparry<DoublePoint2D> getRelativePoints() {
+    public Sparry<DoublePoint> getRelativePoints() {
         return this;
     }
-    public Sparry<DoublePoint2D> getCanvasPoints() {
-        Sparry<DoublePoint2D> result = new Sparry<>();
-        this.forEach(i -> result.add(new DoublePoint2D(owner.TCX(i.x()),owner.TCY(i.y()))));
+    public Sparry<DoublePoint> getCanvasPoints() {
+        Sparry<DoublePoint> result = new Sparry<>();
+        this.forEach(i -> result.add(new DoublePoint(owner.TCX(i.x()),owner.TCY(i.y()))));
         return result;
     }
     public void setShape(Polygon2D polygon) {
