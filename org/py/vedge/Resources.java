@@ -65,8 +65,7 @@ public class Resources {
     public static void overrideContents(String path, String contents) throws IOException {
 
         if(!Resources.asFile(path).delete()) {
-            ErrorHandler.silent("Failed to delete original \"" + path + "\"");
-            return;
+//            ErrorHandler.silent("Failed to delete original \"" + path + "\"");
         }
         FileWriter fw = new FileWriter(Resources.asFile(path),false);
         fw.write(contents);
@@ -114,6 +113,24 @@ public class Resources {
         } catch(IOException e) {
             ErrorHandler.silent(e);
             return null;
+        }
+    }
+
+    public static void overrideRawContents(String path, BitCluster bits) throws IOException {
+
+        Resources.asFile(path).delete();
+        Resources.createFile(path);
+        DataOutputStream dos = new DataOutputStream(new FileOutputStream(resolve(path)));
+        byte[] data = bits.toBytes();
+        dos.write(data);
+        dos.close();
+
+    }
+    public static void overrideRawContents_safe(String path, BitCluster bits) {
+        try {
+            overrideRawContents(path,bits);
+        } catch(IOException e) {
+            ErrorHandler.silent(e);
         }
     }
 

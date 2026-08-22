@@ -64,7 +64,7 @@ public class InputWatcher {
 
         };
 
-        if(watcher.valid()) ErrorHandler.silent("Cannot parse watcher: " + string);
+        if(!watcher.valid()) ErrorHandler.silent("Cannot parse watcher: " + string);
 
         return watcher;
 

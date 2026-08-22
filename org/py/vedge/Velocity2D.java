@@ -9,8 +9,8 @@ public class Velocity2D {
 
     public void tick() {
 
-        if(Math.abs(x) > friction / 10) x -= (Math.abs(x)/x) * (friction / 10); else x = 0.0;
-        if(Math.abs(y) > friction / 10) y -= (Math.abs(y)/y) * (friction / 10); else y = 0.0;
+        if(Math.abs(x) > friction) x -= (Math.abs(x)/x) * (friction); else x = 0.0;
+        if(Math.abs(y) > friction) y -= (Math.abs(y)/y) * (friction); else y = 0.0;
 
     }
 
@@ -20,8 +20,8 @@ public class Velocity2D {
 
     // [ X, Y ]
     public void push(double x, double y) {
-        this.x += x / 10;
-        this.y += y / 10;
+        this.x += x;
+        this.y += y;
     }
 
 }

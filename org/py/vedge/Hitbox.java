@@ -7,6 +7,10 @@ public class Hitbox extends Polygon2D {
     public Hitbox(Token owner) {
         this.owner = owner;
     }
+    public Hitbox(Token owner, Polygon2D shape) {
+        this(owner);
+        setShape(shape);
+    }
 
     public Sparry<DoublePoint> getRelativePoints() {
         return this;

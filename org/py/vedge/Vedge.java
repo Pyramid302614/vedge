@@ -32,8 +32,10 @@ public class Vedge {
 
         // Frame processes
         Frame.frameProcesses(
+                new Process(LevelMap2D::tickCurrent,"Tick Map","tick_map"),
                 new Process(Entity2D::tickAll,"Tick Entities","tick_entities"),
                 new Process(Token::collisionAll,"Token Collision","collision_entities"),
+                new Process(LevelMap2D::renderCurrent,"Render Map","render_map"),
                 new Process(Entity2D::renderAll,"Render Entities","render_entities")
         );
 

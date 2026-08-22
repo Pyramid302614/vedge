@@ -1,6 +1,6 @@
 package org.py.vedge;
 
-public final class LevelTile2D extends Token {
+public class LevelTile2D extends Token {
 
     public final int key;
 
@@ -9,5 +9,6 @@ public final class LevelTile2D extends Token {
         staticTokens.add(this);
     }
 
+    public void tileRender(ModifiedGraphics mg) {}
 
 }

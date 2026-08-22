@@ -6,6 +6,10 @@ public class Token {
     public Position2D previousPosition = new Position2D(0,0);
 
     public Hitbox hitbox = new Hitbox(this);
+    public Token hitbox(Polygon2D hitboxShape) {
+        this.hitbox = new Hitbox(this,hitboxShape);
+        return this;
+    }
 
     public double TCX(double x) {
         return position.x + x;

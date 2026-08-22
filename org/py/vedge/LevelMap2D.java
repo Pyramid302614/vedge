@@ -34,11 +34,16 @@ public class LevelMap2D extends Map2D<LevelTile2D> {
     }
 
     public static void tickCurrent() {
-        current.tick();
+        if(current != null) current.tick();
+    }
+    public static void renderCurrent() {
+        if(current != null) current.render();
     }
 
     public void tick() {
-        forEach(LevelTile2D::tick);
+        forEach(i -> {
+            if(i != null) i.tick();
+        });
     }
 
 
@@ -53,6 +58,23 @@ public class LevelMap2D extends Map2D<LevelTile2D> {
     }
 
 
+
+
+    public static double tileSize = Settings.get("vedge.render.level_map_tile_size").asDouble();
+
+    public void render() {
+
+        forEach((tile,point) -> {
+            if(tile != null) tile.tileRender(new ModifiedGraphics(
+                    Window.graphics,
+                    point.x * tileSize,
+                    point.y * tileSize,
+                    tileSize,
+                    tileSize
+            ));
+        });
+
+    }
 
 
 
@@ -80,7 +102,7 @@ public class LevelMap2D extends Map2D<LevelTile2D> {
         int nameLength = raw.getRangeAsInt(0,16); // in bytes
         StringBuilder name = new StringBuilder();
         for(int i = 0; i < nameLength; i++) name.append((char)(raw.getByte(2 + i)));
-        int keySize = (int)Math.ceil(Math.log(tileSet.v().length)/Math.log(2)); /*while(Math.pow(2,keySize) < tileSet.v().length) keySize++;*/
+        int keySize = Math.max((int)Math.ceil(Math.log(tileSet.v().length)/Math.log(2)),2); /*while(Math.pow(2,keySize) < tileSet.v().length) keySize++;*/
 
         LevelMap2D output = new LevelMap2D(name.toString(),tileSet);
 
@@ -101,7 +123,8 @@ public class LevelMap2D extends Map2D<LevelTile2D> {
                 y++;
                 x = 0;
             } else {
-                output.set(x,y,tileSet.v().get(key)); // key = index in tile set
+//                System.out.println(tileSet.v().get(key));
+                output.set(x,y,tileSet.get(key)); // key = index in tile set
                 x++;
             }
 
@@ -117,19 +140,35 @@ public class LevelMap2D extends Map2D<LevelTile2D> {
 
         BitCluster bits = new BitCluster();
 
-        bits.append(16,BitCluster.fromInteger(name.length()).getRawContents());
+        bits.append(16,BitCluster.fromInteger(name.length(),16).getRawContents());
         bits.append(BitCluster.fromUTF8(name).getRawContents());
 
-        int keySize = (int)Math.ceil(Math.log(tileSet.v().length)/Math.log(2));
+        int keySize = Math.max((int)Math.ceil(Math.log(tileSet.v().length)/Math.log(2)),2);
 
         for(int y = 0; y < map.length; y++) {
             for(int x = 0; x < map.get(y).length; x++) {
-                bits.append(keySize,BitCluster.fromInteger(get(x,y).key).getRawContents());
+                bits.append(keySize,BitCluster.fromInteger(get(x,y).key,keySize).getRawContents());
             }
-            if(y != map.length-1) bits.append(BitCluster.fromInteger(keySize-1).getRawContents());
+            if(y != map.length-1) bits.append(BitCluster.fromInteger(keySize-1,keySize).getRawContents());
         }
 
         return bits;
+
+    }
+
+    public static LevelMap2D fromStringFormat(String name, String[] array, HashMap<Character,Integer> lookup) {
+
+        Sparry<LevelTile2D> s = new Sparry<>();
+        lookup.forEach((k,v) -> s.add(null));
+
+        LevelMap2D map = new LevelMap2D(name,new LevelTileSet(s));
+        for(int y = 0; y < array.length; y++) {
+            for(int x = 0; x < array[y].length(); x++) {
+                char c = array[y].charAt(x);
+                map.set(x,y,new LevelTile2D(lookup.get(c)));
+            }
+        }
+        return map;
 
     }
 

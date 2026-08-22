@@ -83,9 +83,7 @@ public class BitCluster {
         }
         return output;
     }
-    public static BitCluster fromInteger(int integer) {
-         int length = 0;
-         while(Math.pow(2,length) < integer) length++;
+    public static BitCluster fromInteger(int integer, int length) {
          Bit[] bits = new Bit[length];
          for(int i = 0; i < length; i++) {
             bits[length-1-i] = new Bit((integer % 2) == 1);

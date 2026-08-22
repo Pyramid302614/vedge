@@ -2,11 +2,9 @@ package org.py.vedge;
 
 import javafx.scene.canvas.GraphicsContext;
 
-import java.util.Arrays;
-
 public class Graphics implements GraphicsAdapter {
 
-    private final GraphicsContext gc;
+    public final GraphicsContext gc;
 
     private Color fill = Color.ORANGE;
     private Color stroke = Color.BLACK;
