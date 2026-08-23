@@ -1,23 +1,23 @@
 package org.py.vedge;
 public class LevelTileSet {
 
-    private final Sparry<LevelTile2D> v;
+    private final Sparry<LevelTile> v;
 
-    public LevelTileSet(Sparry<LevelTile2D> v) {
+    public LevelTileSet(Sparry<LevelTile> v) {
         this.v = v;
     }
-    public LevelTileSet(LevelTile2D... v) {
+    public LevelTileSet(LevelTile... v) {
         this.v = new Sparry<>(v);
     }
 
-    public LevelTile2D get(int key) {
-        for(LevelTile2D tile : v) {
+    public LevelTile get(int key) {
+        for(LevelTile tile : v) {
             if(tile.key == key) return tile;
         }
         return null;
     }
 
-    public Sparry<LevelTile2D> v() {
+    public Sparry<LevelTile> v() {
         return v;
     }
 

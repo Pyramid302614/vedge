@@ -1,11 +1,11 @@
 package org.py.vedge;
 
-public class Position2D {
+public class Position {
 
     public double x = 0;
     public double y = 0;
 
-    public Velocity2D velocity = null;
+    public Velocity velocity = null;
 
     public void tick() {
 
@@ -17,24 +17,24 @@ public class Position2D {
 
     }
 
-    public Position2D() {}
-    public Position2D(double x, double y) {
+    public Position() {}
+    public Position(double x, double y) {
         this.x = x;
         this.y = y;
     }
 
     public void configureVelocity(double friction) {
-        velocity = new Velocity2D(friction);
+        velocity = new Velocity(friction);
     }
 
-    public boolean equals(Position2D pos2d) {
+    public boolean equals(Position pos2d) {
 
         return pos2d.x == x && pos2d.y == y;
 
     }
-    public Position2D copy() {
+    public Position copy() {
 
-        Position2D pos2d = new Position2D();
+        Position pos2d = new Position();
         pos2d.x = x;
         pos2d.y = y;
         return pos2d;

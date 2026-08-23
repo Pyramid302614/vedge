@@ -17,6 +17,9 @@ public class Sparry<T> implements Iterable<T> {
         v = a;
         length = a != null ? a.length : 0;
     }
+    public Sparry(Sparry<T> a) {
+        addAll(a);
+    }
 
     public Sparry() {}
 

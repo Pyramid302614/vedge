@@ -1,6 +1,6 @@
 package org.py.vedge;
 
-public class Velocity2D {
+public class Velocity {
 
     public double x = 0;
     public double y = 0;
@@ -14,7 +14,7 @@ public class Velocity2D {
 
     }
 
-    public Velocity2D(double friction) {
+    public Velocity(double friction) {
         this.friction = friction;
     }
 

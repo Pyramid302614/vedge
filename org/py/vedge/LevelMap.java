@@ -2,43 +2,36 @@ package org.py.vedge;
 
 import java.util.HashMap;
 
-public class LevelMap2D extends Map2D<LevelTile2D> {
+public class LevelMap extends Map2D<LevelTile> {
 
-    public static LevelMap2D current;
-    public static HashMap<String,LevelMap2D> cached = new HashMap<>();
-    public static HashMap<String,String> paths = new HashMap<>();
-    public static HashMap<String,LevelTileSet> tileSets = new HashMap<>();
-
-    public void load() {
-        cached.put(name,this);
-        current = this;
-    }
-    public static void load(String name) {
-        if(cached.containsKey(name)) {
-            current = cached.get(name);
-            return;
-        }
-        if(!paths.containsKey(name)) {
-            ErrorHandler.silent("An attempt was made to load level map \"" + name + "\", but no LevelMap2D::addLevelMap call was made with that name!");
-            return;
-        }
-        LevelMap2D map = LevelMap2D.fromFile(paths.get(name),tileSets.get(name));
-        cached.put(name,map);
-        current = map;
-    }
-    public static void unloadCurrent() {
-        current = null;
-    }
-    public static void clearCache() {
-        cached.clear();
-    }
-
-    public static void tickCurrent() {
-        if(current != null) current.tick();
-    }
-    public static void renderCurrent() {
-        if(current != null) current.render();
-    }
+//    public static LevelMap2D current;
+//    public static HashMap<String,LevelMap2D> cached = new HashMap<>();
+//    public static HashMap<String,String> paths = new HashMap<>();
+//    public static HashMap<String,LevelTileSet> tileSets = new HashMap<>();
+//
+//    public void load() {
+//        cached.put(name,this);
+//        current = this;
+//    }
+//    public static void load(String name) {
+//        if(cached.containsKey(name)) {
+//            current = cached.get(name);
+//            return;
+//        }
+//        if(!paths.containsKey(name)) {
+//            ErrorHandler.silent("An attempt was made to load level map \"" + name + "\", but no LevelMap2D::addLevelMap call was made with that name!");
+//            return;
+//        }
+//        LevelMap2D map = LevelMap2D.fromFile(paths.get(name),tileSets.get(name));
+//        cached.put(name,map);
+//        current = map;
+//    }
+//    public static void unloadCurrent() {
+//        current = null;
+//    }
+//    public static void clearCache() {
+//        cached.clear();
+//    }
 
     public void tick() {
         forEach(i -> {
@@ -52,21 +45,25 @@ public class LevelMap2D extends Map2D<LevelTile2D> {
     public final String name;
     public final LevelTileSet tileSet;
 
-    public LevelMap2D(String name, LevelTileSet tileSet) {
+    public LevelMap(String name, LevelTileSet tileSet) {
         this.name = name;
         this.tileSet = tileSet;
     }
 
 
+    public Sparry<Token> asTokens() {
+        return new Sparry<>();
+    }
+
 
 
     public static double tileSize = Settings.get("vedge.render.level_map_tile_size").asDouble();
 
-    public void render() {
+    public void render(Graphics g) {
 
         forEach((tile,point) -> {
             if(tile != null) tile.tileRender(new ModifiedGraphics(
-                    Window.graphics,
+                    g,
                     point.x * tileSize,
                     point.y * tileSize,
                     tileSize,
@@ -78,13 +75,13 @@ public class LevelMap2D extends Map2D<LevelTile2D> {
 
 
 
-    public static void addLevelMap(String name, String path, LevelTileSet tileSet) {
-        paths.put(name,path);
-        tileSets.put(name,tileSet);
-    }
+//    public static void addLevelMap(String name, String path, LevelTileSet tileSet) {
+//        paths.put(name,path);
+//        tileSets.put(name,tileSet);
+//    }
 
 
-    public static LevelMap2D fromFile(String path, LevelTileSet tileSet) {
+    public static LevelMap fromFile(String path, LevelTileSet tileSet) {
 
         return parse(Resources.getRawContents_safe(path),tileSet);
 
@@ -94,7 +91,7 @@ public class LevelMap2D extends Map2D<LevelTile2D> {
         Resources.overrideContents_safe(path,toRaw().toUTF8());
 
     }
-    public static LevelMap2D parse(BitCluster raw, LevelTileSet tileSet) {
+    public static LevelMap parse(BitCluster raw, LevelTileSet tileSet) {
 
         if(raw == null) return null;
         raw.setByteSize(8);
@@ -104,7 +101,7 @@ public class LevelMap2D extends Map2D<LevelTile2D> {
         for(int i = 0; i < nameLength; i++) name.append((char)(raw.getByte(2 + i)));
         int keySize = Math.max((int)Math.ceil(Math.log(tileSet.v().length)/Math.log(2)),2); /*while(Math.pow(2,keySize) < tileSet.v().length) keySize++;*/
 
-        LevelMap2D output = new LevelMap2D(name.toString(),tileSet);
+        LevelMap output = new LevelMap(name.toString(),tileSet);
 
         int y = 0;
         int x = 0;
@@ -156,16 +153,16 @@ public class LevelMap2D extends Map2D<LevelTile2D> {
 
     }
 
-    public static LevelMap2D fromStringFormat(String name, String[] array, HashMap<Character,Integer> lookup) {
+    public static LevelMap fromStringFormat(String name, String[] array, HashMap<Character,Integer> lookup) {
 
-        Sparry<LevelTile2D> s = new Sparry<>();
+        Sparry<LevelTile> s = new Sparry<>();
         lookup.forEach((k,v) -> s.add(null));
 
-        LevelMap2D map = new LevelMap2D(name,new LevelTileSet(s));
+        LevelMap map = new LevelMap(name,new LevelTileSet(s));
         for(int y = 0; y < array.length; y++) {
             for(int x = 0; x < array[y].length(); x++) {
                 char c = array[y].charAt(x);
-                map.set(x,y,new LevelTile2D(lookup.get(c)));
+                map.set(x,y,new LevelTile(lookup.get(c)));
             }
         }
         return map;

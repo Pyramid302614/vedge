@@ -1,15 +1,13 @@
 package org.py.vedge;
 
+import java.awt.*;
+
 public class Token {
 
-    public Position2D position = new Position2D(0,0);
-    public Position2D previousPosition = new Position2D(0,0);
+    public Position position = new Position(0,0);
+    public Position previousPosition = new Position(0,0);
 
     public Hitbox hitbox = new Hitbox(this);
-    public Token hitbox(Polygon2D hitboxShape) {
-        this.hitbox = new Hitbox(this,hitboxShape);
-        return this;
-    }
 
     public double TCX(double x) {
         return position.x + x;
@@ -25,23 +23,16 @@ public class Token {
     }
 
     public void tokenRender(Graphics g) {}
-    public void render(Graphics g) {
+    public final void render(Graphics g) {
 
         tokenRender(g);
 
     }
 
-
-    public static Sparry<Token> staticTokens = new Sparry<>();
-    public static Sparry<Token> dynamicTokens = new Sparry<>();
-    public static boolean doCollisionForNonMainDynamicTokens = Settings.get("vedge.collision.collide_non_main_tokens").asBoolean();
-
-    public boolean mainCollider = false;
-
-    public void onCollide(Token[] colliders) {}
+    public void onCollide(Token[] colliders, Point pointOfCollision) {}
 
 
-    public void tick() {
+    public final void tick() {
 
         previousPosition = position.copy();
         position.tick();
@@ -49,10 +40,5 @@ public class Token {
 
     }
     public void tokenTick() {}
-
-    public static void collisionAll() {
-
-
-    }
 
 }
