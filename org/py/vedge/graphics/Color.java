@@ -16,7 +16,8 @@ public class Color {
             new Vector2<>("blue",new int[] {0,0,255}),
             new Vector2<>("purple",new int[] {85,0,170}),
             new Vector2<>("magenta",new int[] {170,0,85}),
-            new Vector2<>("white",new int[] {255,255,255})
+            new Vector2<>("white",new int[] {255,255,255}),
+            new Vector2<>("gray",new int[] {150,150,150})
     };
 
     private int[] rgb = { 0, 0, 0 };
@@ -96,7 +97,7 @@ public class Color {
     // Remove method if javafx.scene.paint.Color is underlined red
     public javafx.scene.paint.Color toColorFX() {
         if(!value) {
-            return javafx.scene.paint.Color.rgb(rgb[0], rgb[1], rgb[2], (double)a/255);
+            return javafx.scene.paint.Color.rgb(rgb[0], rgb[1], rgb[2], Math.max(Math.min((double)a/255,1),0));
         }
         return null; // Doesn't support HEX
     }
@@ -120,6 +121,7 @@ public class Color {
     public static final Color PURPLE = new Color("purple");
     public static final Color MAGENTA = new Color("magenta");
     public static final Color WHITE = new Color("white");
+    public static final Color GRAY = new Color("gray");
     public static final Color BLANK = new Color(0,0,0,0);
 
     public static javafx.scene.paint.Color colorAwt_to_colorFx(java.awt.Color awt, javafx.scene.paint.Color fx) {

@@ -38,7 +38,11 @@ public class JSON {
         JSONObject obj = new JSONObject();
         String str = string
                 .replaceAll("\n","")
-                .replaceAll(" ","")
+                .replaceAll(", +",",")
+                .replaceAll(". +, +",",")
+                .replaceAll(": +",":")
+                .replaceAll(" +}","}")
+                .replaceAll("\\{ +","{")
                 .replaceAll("\"(?=:)|(?<=\\{)\"|(?<=,)\"|(?<=^)\"","");
         str = str.substring(1,str.length()-1);
 
@@ -57,75 +61,79 @@ public class JSON {
             char c = str.charAt(i);
             char nc = i != str.length()-1 ? str.charAt(i+1) : (char)0;
 
-            if((type == JSONValue.Type.JSONObject && c == '{') || (type == JSONValue.Type.Array && c == '[')) scope++;
-            else if((type == JSONValue.Type.JSONObject && c == '}') || (type == JSONValue.Type.Array && c == ']')) scope--;
+//            if(c != ' ' || write) {
 
-            if(scope == 0) switch(c) {
+                if((type == JSONValue.Type.JSONObject && c == '{') || (type == JSONValue.Type.Array && c == '[')) scope++;
+                else if((type == JSONValue.Type.JSONObject && c == '}') || (type == JSONValue.Type.Array && c == ']')) scope--;
 
-                case '"':
-                    if(mode && type == JSONValue.Type.String && pc != '\\') {
-                        write = false;
-                        obj.set(propertyBuffer,buffer);
-                        buffer = "";
-                        propertyBuffer = "";
-                    }
-                    break;
+                if(scope == 0) switch(c) {
 
-                case ',':
-                    if(type != JSONValue.Type.String) {
-                        write = false;
-                        JSONValue value =
-                                type == JSONValue.Type.JSONObject ? new JSONValue(parse(buffer)) :
-                                        (type == JSONValue.Type.Array ? parseArray(buffer) : new JSONValue(buffer));
-                        value.type = type;
-                        obj.set(propertyBuffer,value);
-                        buffer = "";
-                        propertyBuffer = "";
-                    }
-                    break;
-                case ':':
-                    if(propertyBuffer.isEmpty()) {
-                        write = false;
-                        propertyBuffer = buffer;
-                        buffer = "";
-                    }
-                    break;
-
-            }
-
-            if(write) buffer += c;
-
-            if(scope == 0) switch(c) {
-
-                case ':':
-                    if(buffer.isEmpty()) {
-                        write = true;
-                        mode = true;
-                        switch(nc) {
-                            case '"':
-                                type = JSONValue.Type.String;
-                                i++;
-                                break;
-                            case '{':
-                                type = JSONValue.Type.JSONObject;
-                                break;
-                            case '[':
-                                type = JSONValue.Type.Array;
-                                break;
-                            default:
-                                type = JSONValue.Type.NonString;
-                                break;
+                    case '"':
+                        if(mode && type == JSONValue.Type.String && pc != '\\') {
+                            write = false;
+                            obj.set(propertyBuffer,buffer);
+                            buffer = "";
+                            propertyBuffer = "";
                         }
-                    }
-                    break;
-
-                case ',':
-                    if(buffer.isEmpty()) {
-                        write = true;
-                        mode = false;
-                        buffer = "";
                         break;
-                    }
+
+                    case ',':
+                        if(type != JSONValue.Type.String) {
+                            write = false;
+                            JSONValue value =
+                                    type == JSONValue.Type.JSONObject ? new JSONValue(parse(buffer)) :
+                                            (type == JSONValue.Type.Array ? parseArray(buffer) : new JSONValue(buffer));
+                            value.type = type;
+                            obj.set(propertyBuffer,value);
+                            buffer = "";
+                            propertyBuffer = "";
+                        }
+                        break;
+                    case ':':
+                        if(propertyBuffer.isEmpty()) {
+                            write = false;
+                            propertyBuffer = buffer;
+                            buffer = "";
+                        }
+                        break;
+
+                }
+
+                if(write) buffer += c;
+
+                if(scope == 0) switch(c) {
+
+                    case ':':
+                        if(buffer.isEmpty()) {
+                            write = true;
+                            mode = true;
+                            switch(nc) {
+                                case '"':
+                                    type = JSONValue.Type.String;
+                                    i++;
+                                    break;
+                                case '{':
+                                    type = JSONValue.Type.JSONObject;
+                                    break;
+                                case '[':
+                                    type = JSONValue.Type.Array;
+                                    break;
+                                default:
+                                    type = JSONValue.Type.NonString;
+                                    break;
+                            }
+                        }
+                        break;
+
+                    case ',':
+                        if(buffer.isEmpty()) {
+                            write = true;
+                            mode = false;
+                            buffer = "";
+                            break;
+                        }
+
+//                }
 
             }
 

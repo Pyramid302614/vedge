@@ -5,7 +5,6 @@ import org.py.vedge.data.BitCluster;
 import org.py.vedge.graphics.Graphics;
 import org.py.vedge.graphics.ModifiedGraphics;
 import org.py.vedge.infa.java.Resources;
-import org.py.vedge.infa.Settings;
 import org.py.vedge.util.Sparry;
 
 import java.util.HashMap;
@@ -65,7 +64,7 @@ public class LevelMap extends Map<LevelTile> {
 
 
 
-    public static double tileSize = Settings.get("vedge.render.level_map_tile_size").asDouble();
+    public double tileSize = 100;
 
     public void render(Graphics g) {
 

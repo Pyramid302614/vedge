@@ -19,6 +19,9 @@ public interface GraphicsAdapter {
 
     void image(Image image, double x, double y, double w, double h);
 
+    void textSize(double s);
+    void text(String text, double x, double y);
+
     default void fillNoStroke(Color color) {
         fill(color);
         noStroke();

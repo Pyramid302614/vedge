@@ -11,4 +11,9 @@ public class Dimension {
         this.h = h;
     }
 
+    @Override
+    public String toString() {
+        return "[w="+w+", h="+h+"]";
+    }
+
 }

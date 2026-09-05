@@ -1,13 +1,19 @@
 package org.py.vedge.graphics;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
 
 public class Graphics implements GraphicsAdapter {
 
     public final GraphicsContext gc;
 
-    private Color fill = Color.ORANGE;
-    private Color stroke = Color.BLACK;
+    public Color fill = Color.ORANGE;
+    public Color stroke = Color.BLACK;
+
+    public double textSize = 12;
+    public FontPosture textPosture = FontPosture.REGULAR;
+    public String textFamily = "Arial";
 
     public void fill(int r, int g, int b, int a) {
         fill(new Color(r,g,b,a));
@@ -34,11 +40,32 @@ public class Graphics implements GraphicsAdapter {
 
     public void ellipse(double x, double y, double w, double h) {
         if(fill.alpha() != 0) gc.fillOval(x,y,w,h);
-        if(stroke.alpha() != 0) gc.fillOval(x,y,w,h);
+        if(stroke.alpha() != 0) gc.strokeOval(x,y,w,h);
     }
 
     public void image(Image image, double x, double y, double w, double h) {
 
+    }
+
+    public void text(String text, double x, double y) {
+        if(fill.alpha() != 0) gc.fillText(text,x,y);
+        if(stroke.alpha() != 0) gc.strokeText(text,x,y);
+    }
+
+    private void updateFont() {
+        gc.setFont(Font.font(textFamily,textPosture,textSize));
+    }
+    public void textSize(double s) {
+        textSize = s;
+        updateFont();
+    }
+    public void textPosture(FontPosture fontPosture) {
+        textPosture = fontPosture;
+        updateFont();
+    }
+    public void textFamily(String family) {
+        textFamily = family;
+        updateFont();
     }
 
     public void polygon(double[] allX, double[] allY) {

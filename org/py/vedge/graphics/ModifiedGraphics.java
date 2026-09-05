@@ -6,10 +6,12 @@ public class ModifiedGraphics extends Graphics {
     private double yOffset = 0;
     private double xScale = 0;
     private double yScale = 0;
+    private double transparency = 100;
 
     public ModifiedGraphics(Graphics graphics) {
         super(graphics.gc);
     }
+
     public ModifiedGraphics(Graphics graphics, double xOffset, double yOffset, double xScale, double yScale) {
         super(graphics.gc);
         this.xOffset = xOffset;
@@ -23,9 +25,17 @@ public class ModifiedGraphics extends Graphics {
         yOffset = y;
         return this;
     }
+
     public ModifiedGraphics setScale(double x, double y) {
         xScale = x;
         yScale = y;
+        return this;
+    }
+
+    public ModifiedGraphics setTransparency(double t) {
+        transparency = t;
+        fill(fill);
+        stroke(stroke);
         return this;
     }
 
@@ -42,6 +52,14 @@ public class ModifiedGraphics extends Graphics {
         return h*yScale;
     }
 
+    @Override
+    public void fill(Color color) {
+        super.fill(new Color(color.red(),color.green(),color.blue(),(int)(color.alpha()*transparency/100)));
+    }
+    @Override
+    public void stroke(Color color) {
+        super.stroke(new Color(color.red(),color.green(),color.blue(),(int)(color.alpha()*transparency/100)));
+    }
     @Override
     public void rect(double x, double y, double w, double h) {
         super.rect(tx(x),ty(y),tw(w),th(h));

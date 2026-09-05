@@ -30,11 +30,11 @@ public class Vedge {
 
         // Timers / Time
         Time.initializeUnits();
-        Timers.create(new Process(JSONFile::tickAllDeferTimers,"Tick Defer Timers","tick_defer_timers"),Settings.get("vedge.timers.tick_defer_timers").asString());
-        Timers.create(new Process(Settings::syncToDisk,"Sync Settings","sync_settings"),Settings.get("vedge.timers.sync_settings").asString());
-        Timers.create(new Process(IterativeEaser::tickAll,"Tick Iterative Timers","tick_iterative_timers"),Settings.get("vedge.timers.tick_iterative_timers").asString());
-        Timers.create(new Process(Observer::tickAll,"Tick Observers","tick_observers"),Settings.get("vedge.timers.tick_observers").asString());
-        Timers.create(new Process(InputListener::handleWiles,"Tick Input Listeners","tick_while_input_listeners"),Settings.get("vedge.timers.tick_while_input_listeners").asString());
+        Timers.steady(new Process(JSONFile::tickAllDeferTimers,"Tick Defer Timers","tick_defer_timers"),Settings.get("vedge.timers.tick_defer_timers").asString());
+        Timers.steady(new Process(Settings::syncToDisk,"Sync Settings","sync_settings"),Settings.get("vedge.timers.sync_settings").asString());
+        Timers.steady(new Process(IterativeEaser::tickAll,"Tick Iterative Timers","tick_iterative_timers"),Settings.get("vedge.timers.tick_iterative_timers").asString());
+        Timers.steady(new Process(Observer::tickAll,"Tick Observers","tick_observers"),Settings.get("vedge.timers.tick_observers").asString());
+        Timers.steady(new Process(InputListener::handleWiles,"Tick Input Listeners","tick_while_input_listeners"),Settings.get("vedge.timers.tick_while_input_listeners").asString());
 
         // Input
         InputListener.compileInputGroups();

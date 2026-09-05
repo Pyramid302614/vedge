@@ -36,7 +36,7 @@ public class Window extends Application {
     public static boolean renderBackground = true;
 
     @Override
-    public void start(Stage stage) { // TODO: on close, exit or something
+    public void start(Stage stage) {
 
         if(windowInitialized) return;
         else windowInitialized = true;

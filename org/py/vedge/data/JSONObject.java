@@ -4,7 +4,6 @@ import org.py.vedge.infa.java.ErrorHandler;
 
 import java.util.HashMap;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 public class JSONObject {
 
@@ -80,9 +79,9 @@ public class JSONObject {
         buffer.asJSONObject().set(parts[parts.length-1],value);
     }
 
-    public void forEach(Consumer<JSONValue> consumer) {
-        for(JSONValue value : values()) {
-            consumer.accept(value);
+    public void forEach(BiConsumer<JSONValue,String> consumer) {
+        for(String key : keys()) {
+            consumer.accept(get(key),key);
         }
     }
 

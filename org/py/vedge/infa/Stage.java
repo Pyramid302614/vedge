@@ -1,40 +1,64 @@
 package org.py.vedge.infa;
 
-import org.py.vedge.util.Sparry;
 import org.py.vedge.graphics.Graphics;
 import org.py.vedge.ii.Entity;
 import org.py.vedge.ii.LevelMap;
 import org.py.vedge.ii.Player;
 import org.py.vedge.ii.TokenGroup;
+import org.py.vedge.ii.elements.Element;
+import org.py.vedge.ii.elements.ElementGroup;
+import org.py.vedge.infa.java.Error;
+import org.py.vedge.util.Sparry;
 
 import java.util.HashMap;
 
 public class Stage {
 
-    public static String activeStage;
+    private static String activeStage;
+    private static String graceStage;
 
     public static HashMap<String,Stage> stages = new HashMap<>();
 
     public static void activate(String stage) {
+        if(activeStage != null) {
+            if(active().grace > 0) {
+                graceStage = active().name;
+                Timers.create(() -> graceStage = null,active().grace);
+            }
+            active().onExit();
+        }
         activeStage = stage;
+        if(!stages.containsKey(stage)) new Error("An attempt was made to switch to a non-existent stage: " + stage);
+        active().onEnter();
     }
 
-    private static Stage active() {
+    public static Stage active() {
         return stages.get(activeStage);
     }
 
     public static void tickStage() {
         active().tick();
+        if(graceStage != null) stages.get(graceStage).tick();
     }
     public static void collideStage() {
         active().collide();
+        if(graceStage != null) stages.get(graceStage).collide();
     }
     public static void renderStage() {
         active().render(Window.graphics);
+        if(graceStage != null) stages.get(graceStage).render(Window.graphics);
+    }
+
+
+    private int grace = 0;
+    public Stage grace(int grace) {
+        this.grace = grace;
+        return this;
     }
 
 
     private final TokenGroup tokens = new TokenGroup();
+    private final ElementGroup elements = new ElementGroup();
     private final String name;
 
     public Stage(String name) {
@@ -105,6 +129,12 @@ public class Stage {
         levelMap.render(g);
     }
 
+    private void tickElements() {
+        elements.tick();
+    }
+    private void renderElements(Graphics g) {
+        elements.render(g);
+    }
 
 
     public void addEntities(Entity... entities) {
@@ -120,12 +150,18 @@ public class Stage {
         tokens.addSecondaries(levelMap.asTokens());
     }
 
+    public void addElements(Element... elements) {
+        this.elements.add(elements);
+    }
+
+
 
 
     private void tick() {
         if(levelMap != null) tickLevelMap();
         if(entities.length > 0) tickEntities();
         if(player != null) tickPlayer();
+        if(elements.length() > 0) tickElements();
     }
     private void collide() {
 
@@ -134,6 +170,16 @@ public class Stage {
         if(levelMap != null) renderLevelMap(g);
         if(entities.length > 0) renderEntities(g);
         if(player != null) renderPlayer(g);
+        if(elements.length() > 0) renderElements(g);
+    }
+
+
+
+    private void onEnter() {
+        elements.onEnter();
+    }
+    private void onExit() {
+        elements.onExit();
     }
 
 
