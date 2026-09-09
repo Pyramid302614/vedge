@@ -1,5 +1,7 @@
 package org.py.vedge.graphics;
 
+import javafx.scene.text.Font;
+
 public class ModifiedGraphics extends Graphics {
 
     private double xOffset = 0;
@@ -41,15 +43,33 @@ public class ModifiedGraphics extends Graphics {
 
     private double tx(double x) {
         return x*xScale+xOffset;
-    }
+    } // Translate X
     private double ty(double y) {
         return y*yScale+yOffset;
-    }
+    } // Translate Y
     private double tw(double w) {
         return w*xScale;
-    }
+    } // Translate Width
     private double th(double h) {
         return h*yScale;
+    } // Translate Height
+    private double td(double d) {
+        return d*((xScale+yScale)/2);
+    } // Translate Dimension
+    private double rx(double x) {
+        return (x-xOffset)/xScale;
+    }
+    private double ry(double y) {
+        return (y-yOffset)/yScale;
+    }
+    private double rw(double w) {
+        return w/xScale;
+    }
+    private double rh(double h) {
+        return h/yScale;
+    }
+    private double rd(double d) {
+        return d/((xScale+yScale)/2);
     }
 
     @Override
@@ -64,9 +84,15 @@ public class ModifiedGraphics extends Graphics {
     public void rect(double x, double y, double w, double h) {
         super.rect(tx(x),ty(y),tw(w),th(h));
     }
+    public void rect(double x, double y, double w, double h, double ntx, double nty, double ntw, double nth) {
+        super.rect(tx(x)+ntx,ty(y)+nty,tw(w)+ntw,th(h)+nth);
+    }
     @Override
     public void ellipse(double x, double y, double w, double h) {
         super.ellipse(tx(x),ty(y),tw(w),th(h));
+    }
+    public void ellipse(double x, double y, double w, double h, double ntx, double nty, double ntw, double nth) {
+        super.ellipse(tx(x)+ntx,ty(y)+nty,tw(w)+ntw,th(h)+nth);
     }
     @Override
     public void polygon(double[] allX, double[] allY) {
@@ -77,6 +103,29 @@ public class ModifiedGraphics extends Graphics {
             translatedY[i] = tx(allY[i]);
         }
         super.polygon(translatedX,translatedY);
+    }
+
+    @Override
+    public void text(String text, double x, double y) {
+        super.text(text,tx(x),ty(y));
+    }
+    public void text(String text, double x, double y, double ntx, double nty) {
+        super.text(text,tx(x)+ntx,ty(y)+nty);
+    }
+
+    @Override
+    public void updateFont() {
+        gc.setFont(Font.font(textFamily,textPosture,td(textSize)));
+    }
+
+    public double textWidth(String s) {
+        return rw(super.textWidth(s));
+    }
+    public double textAscent() {
+        return rh(super.textAscent());
+    }
+    public double textHeight() {
+        return rh(super.textHeight());
     }
 
 }

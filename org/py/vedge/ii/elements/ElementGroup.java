@@ -15,7 +15,7 @@ public class ElementGroup  {
         value.forEach(Element::tick);
     }
     public void render(Graphics g) {
-        value.forEach(e -> e.elementRender(g));
+        value.forEach(e -> e.render(g));
     }
 
     public void onEnter() {

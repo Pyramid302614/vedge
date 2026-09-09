@@ -21,7 +21,12 @@ public class Property {
         Right,
         Top,
         Bottom,
-        Center
+        Center,
+        TopCenter,
+        BottomCenter,
+        LeftCenter,
+        RightCenter,
+        None
     }
 
     private PropertyType pt;
@@ -82,10 +87,10 @@ public class Property {
         return alignment;
     }
 
-    public Property ease(Easer.Variant variant, Easer.Type type, double speed) {
+    public Property ease(Easer.Variant variant, Easer.Type type, double speedMS) {
         switch(dt) {
-            case Number -> { easers.clear(); easers.add(new Easer(variant,type,speed,() -> number)); }
-            case Color -> { easers.clear(); easers.addAll(new Easer(variant,type,speed,() -> (double)color.red()),new Easer(variant,type,speed,() -> (double)color.green()),new Easer(variant,type,speed,() -> (double)color.blue()),new Easer(variant,type,speed,() -> (double)color.blue()),new Easer(variant,type,speed,() -> (double)color.alpha())); }
+            case Number -> { easers.clear(); easers.add(new Easer(variant,type,speedMS,() -> number)); }
+            case Color -> { easers.clear(); easers.addAll(new Easer(variant,type,speedMS,() -> (double)color.red()),new Easer(variant,type,speedMS,() -> (double)color.green()),new Easer(variant,type,speedMS,() -> (double)color.blue()),new Easer(variant,type,speedMS,() -> (double)color.blue()),new Easer(variant,type,speedMS,() -> (double)color.alpha())); }
             default -> { easers.clear(); }
         }
         return this;

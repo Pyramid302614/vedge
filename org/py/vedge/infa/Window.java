@@ -7,11 +7,11 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import org.py.vedge.util.Sparry;
 import org.py.vedge.graphics.Graphics;
-
-import java.awt.*;
-import java.awt.Dimension;
+import org.py.vedge.ii.Bounds;
+import org.py.vedge.ii.Dimension;
+import org.py.vedge.ii.Position;
+import org.py.vedge.util.Sparry;
 
 public class Window extends Application {
 
@@ -19,7 +19,8 @@ public class Window extends Application {
 
     public static org.py.vedge.graphics.Graphics graphics;
 
-    public static Point position = new Point(
+    public static final Position position = new Position(0,0);
+    public static Position windowPosition = new Position(
             Settings.get("vedge.window.start_position.x").asInteger(),
             Settings.get("vedge.window.start_position.y").asInteger()
     );
@@ -35,17 +36,27 @@ public class Window extends Application {
 
     public static boolean renderBackground = true;
 
+    public static Bounds getBounds() {
+        return new Bounds(
+                position,
+                size
+        );
+    }
+
     @Override
     public void start(Stage stage) {
+
+        stage.setX(windowPosition.x);
+        stage.setY(windowPosition.y);
 
         if(windowInitialized) return;
         else windowInitialized = true;
 
         Pane root = new Pane();
-        Canvas canvas = new Canvas(size.width,size.height);
+        Canvas canvas = new Canvas(size.w,size.h);
 
         root.getChildren().add(canvas);
-        Scene scene = new Scene(root,size.width,size.height,Color.WHITE);
+        Scene scene = new Scene(root,size.w,size.h,Color.WHITE);
 
         stage.setTitle(Settings.get("vedge.window.name").asString());
         stage.setScene(scene);
@@ -65,7 +76,7 @@ public class Window extends Application {
             public void handle(long l) {
                 if(renderBackground) {
                     canvas.getGraphicsContext2D().setFill(Color.WHITE);
-                    canvas.getGraphicsContext2D().fillRect(0,0,size.width,size.width);
+                    canvas.getGraphicsContext2D().fillRect(0,0,size.w,size.h);
                 }
                 Frame.frame();
             }

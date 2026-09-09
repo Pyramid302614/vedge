@@ -3,6 +3,7 @@ package org.py.vedge.graphics;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
+import javafx.scene.text.Text;
 
 public class Graphics implements GraphicsAdapter {
 
@@ -52,7 +53,7 @@ public class Graphics implements GraphicsAdapter {
         if(stroke.alpha() != 0) gc.strokeText(text,x,y);
     }
 
-    private void updateFont() {
+    public void updateFont() {
         gc.setFont(Font.font(textFamily,textPosture,textSize));
     }
     public void textSize(double s) {
@@ -66,6 +67,22 @@ public class Graphics implements GraphicsAdapter {
     public void textFamily(String family) {
         textFamily = family;
         updateFont();
+    }
+
+    public double textWidth(String s) {
+        Text text = new Text(s);
+        text.setFont(gc.getFont());
+        return text.getLayoutBounds().getWidth();
+    }
+    public double textAscent() {
+        Text text = new Text("H");
+        text.setFont(gc.getFont());
+        return text.getBaselineOffset();
+    }
+    public double textHeight() {
+        Text text = new Text("Hg");
+        text.setFont(gc.getFont());
+        return text.getBoundsInLocal().getHeight();
     }
 
     public void polygon(double[] allX, double[] allY) {
