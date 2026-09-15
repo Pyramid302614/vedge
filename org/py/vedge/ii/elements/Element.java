@@ -12,8 +12,15 @@ public class Element extends Token {
     public Element parent = null; // null = no parents, orphan
 
     public final Styles styles = new Styles();
-    public Element style(String key, Property value) {
+
+    // set()
+    public Element Style(String key, Property value) {
         styles.set(key,value);
+        return this;
+    }
+    // setValue()
+    public Element style(String key, Property value) {
+        styles.setValue(key,value);
         return this;
     }
 

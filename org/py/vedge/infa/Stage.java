@@ -25,12 +25,39 @@ public class Stage {
                 graceStage = active().name;
                 Timers.create(() -> graceStage = null,active().grace);
             }
-            active().onExit();
+            if(active().linger > 0) {
+                Timers.create(() -> {
+                    activeStage = null;
+                    activate(stage);
+                },active().linger);
+                active().exit();
+                return;
+            }
+            active().exit();
         }
         activeStage = stage;
         if(!stages.containsKey(stage)) new Error("An attempt was made to switch to a non-existent stage: " + stage);
-        active().onEnter();
+        active().enter();
     }
+    public static void activate(String... stages) {
+        for(int i = 0; i < stages.length-1; i++) {
+            Stage stage = Stage.stages.get(stages[i]);
+            Stage nextStage = Stage.stages.get(stages[i+1]);
+            stage.addOnceExit(nextStage::activate);
+        }
+        Stage.activate(stages[0]);
+    }
+    // Vector2<Stage,DurationItWillBeheldFor>
+    public static void activateScene(String[] stages, String[] durations) {
+        for(int i = 0; i < stages.length-1; i++) {
+            Stage stage = Stage.stages.get(stages[i]);
+            Stage nextStage = Stage.stages.get(stages[i]);
+            final String stageDuration = durations[i];
+            stage.addOnceEnter(() -> Timers.create(nextStage::activate,stageDuration));
+        }
+        activate(stages[0]);
+    }
+
 
     public static Stage active() {
         return stages.get(activeStage);
@@ -51,8 +78,14 @@ public class Stage {
 
 
     private int grace = 0;
-    public Stage grace(int grace) {
-        this.grace = grace;
+    public Stage grace(int graceMS) {
+        this.grace = graceMS;
+        return this;
+    }
+
+    private int linger = 0;
+    public Stage linger(int lingerMS) {
+        this.linger = lingerMS;
         return this;
     }
 
@@ -173,14 +206,40 @@ public class Stage {
         if(elements.length() > 0) renderElements(g);
     }
 
+    // EXIT EXCLUDES LINGER AND GRACE
 
+    public void onEnter() {
 
-    private void onEnter() {
+    }
+    public void onExit() {
+
+    }
+
+    private Sparry<Runnable> onceEnters = new Sparry<>();
+    private Sparry<Runnable> onceExits = new Sparry<>();
+
+    public void addOnceEnter(Runnable runnable) {
+        if(onceEnters == null) onceEnters = new Sparry<>(runnable);
+        else onceEnters.add(runnable);
+    }
+    public void addOnceExit(Runnable runnable) {
+        if(onceExits == null) onceExits = new Sparry<>(runnable);
+        else onceExits.add(runnable);
+    }
+
+    private void enter() {
+        onEnter();
         elements.onEnter();
+        onceEnters.forEach(Runnable::run);
+        onceEnters.clear();
     }
-    private void onExit() {
+    private void exit() {
+        onExit();
         elements.onExit();
+        onceExits.forEach(Runnable::run);
+        onceExits.clear();
     }
+
 
 
 

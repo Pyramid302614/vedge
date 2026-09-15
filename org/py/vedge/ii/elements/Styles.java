@@ -12,6 +12,7 @@ public class Styles {
     }
     public Styles setValue(String key, Property value) {
         if(this.value.containsKey(key)) this.value.get(key).set(value);
+        else set(key,value);
         return this;
     }
     public Property get(String key) {
