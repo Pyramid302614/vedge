@@ -6,7 +6,7 @@ import org.py.vedge.util.Observer;
 
 import java.util.function.Supplier;
 
-public class Easer {
+public class MathematicalEaser {
 
     public enum Variant {
         Sin
@@ -28,10 +28,10 @@ public class Easer {
 
     private final Observer<Double> observer;
 
-    public Easer(Variant variant, Type type, double speed, Supplier<Double> get) {
+    public MathematicalEaser(Variant variant, Type type, double speed, Supplier<Double> get) {
         this(variant,type,speed,get,get.get());
     }
-    public Easer(Variant variant, Type type, double speed, Supplier<Double> get, double start) {
+    public MathematicalEaser(Variant variant, Type type, double speed, Supplier<Double> get, double start) {
         this.buffer = start;
         this.observer = new Observer<>(get,(p,d) -> easeTo(d)).remove();
         this.variant = variant;

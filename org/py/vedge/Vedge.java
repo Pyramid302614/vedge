@@ -7,6 +7,7 @@ import org.py.vedge.infa.*;
 import org.py.vedge.infa.Process;
 import org.py.vedge.infa.java.ErrorHandler;
 import org.py.vedge.infa.java.Time;
+import org.py.vedge.infa.stage.Stage;
 import org.py.vedge.util.Observer;
 import org.py.vedge.input.InputListener;
 

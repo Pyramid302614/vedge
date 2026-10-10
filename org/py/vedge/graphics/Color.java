@@ -1,5 +1,6 @@
 package org.py.vedge.graphics;
 
+import org.py.vedge.infa.java.ErrorHandler;
 import org.py.vedge.util.Vector2;
 
 public class Color {
@@ -90,7 +91,7 @@ public class Color {
         if(value) {
             return hex;
         } else {
-            return rgb[0] + "," + rgb[1] + "," + rgb[2];
+            return "Color : r" + rgb[0] + " : g" + rgb[1] + " : b" + rgb[2] + " : a" + a;
         }
     }
 
@@ -126,6 +127,16 @@ public class Color {
 
     public static javafx.scene.paint.Color colorAwt_to_colorFx(java.awt.Color awt, javafx.scene.paint.Color fx) {
         return new javafx.scene.paint.Color(awt.getRed(),awt.getGreen(),awt.getBlue(),awt.getAlpha());
+    }
+
+    @Override
+    public Color clone() {
+        try {
+            return (Color) super.clone();
+        } catch(CloneNotSupportedException e) {
+            ErrorHandler.silent(e);
+            return this;
+        }
     }
 
 }

@@ -40,14 +40,6 @@ public class Label extends Element {
         mg.textPosture(posture);
         mg.textSize(size);
 
-        bounds = new Bounds(
-                position,
-                new Dimension(
-                        mg.textWidth(text),
-                        mg.textHeight()
-                )
-        );
-
         mg.fillNoStroke(color);
         mg.text(text,position.x,position.y,0,mg.textAscent());
 
@@ -56,6 +48,20 @@ public class Label extends Element {
     @Override
     public Bounds getBounds() {
         return bounds;
+    }
+
+    @Override
+    public void calculateBounds(ModifiedGraphics mg) {
+        mg.textFamily(family);
+        mg.textPosture(posture);
+        mg.textSize(size);
+        bounds = new Bounds(
+                position,
+                new Dimension(
+                        mg.textWidth(text),
+                        mg.textHeight()
+                )
+        );
     }
 
 }

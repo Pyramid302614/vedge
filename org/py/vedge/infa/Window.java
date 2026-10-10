@@ -36,11 +36,12 @@ public class Window extends Application {
 
     public static boolean renderBackground = true;
 
+    private static Bounds boundsCache;
     public static Bounds getBounds() {
-        return new Bounds(
-                position,
-                size
-        );
+        if(boundsCache == null) boundsCache = new Bounds(position,size);
+        if(boundsCache.dimension().w != size.w || boundsCache.dimension().h != size.h) boundsCache = new Bounds(position,size);
+        if(boundsCache.position().x != position.x || boundsCache.position().y != position.y) boundsCache = new Bounds(position,size);
+        return boundsCache;
     }
 
     @Override

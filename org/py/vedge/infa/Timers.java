@@ -22,7 +22,8 @@ public class Timers {
         create(runnable,Time.msFromString(delay));
     }
     public static void create(Runnable runnable, long delay) {
-        Vedge.scheduler.schedule(runnable,delay,TimeUnit.MILLISECONDS);
+        if(delay == 0) runnable.run();
+        else Vedge.scheduler.schedule(runnable,delay,TimeUnit.MILLISECONDS);
     }
 
 }

@@ -1,15 +1,11 @@
 package org.py.vedge.ii.elements;
 
 import org.py.vedge.graphics.Color;
-import org.py.vedge.i.Easer;
+import org.py.vedge.i.MathematicalEaser;
 import org.py.vedge.util.Sparry;
 
 public class Property {
 
-    public enum PropertyType {
-        Static,
-        Easable
-    }
     public enum DataType {
         Color,
         Number,
@@ -29,13 +25,12 @@ public class Property {
         None
     }
 
-    private PropertyType pt;
     private DataType dt;
     private Color color;
     private double number;
     private P_Alignment alignment;
 
-    private final Sparry<Easer> easers = new Sparry<>();
+    private final Sparry<MathematicalEaser> easers = new Sparry<>();
 
     public void set(Color color) {
         dt = DataType.Color;
@@ -72,7 +67,7 @@ public class Property {
 
 
     public void tick() {
-        easers.forEach(Easer::tick);
+        easers.forEach(MathematicalEaser::tick);
     }
 
     public Color asColor() {
@@ -87,10 +82,10 @@ public class Property {
         return alignment;
     }
 
-    public Property ease(Easer.Variant variant, Easer.Type type, double speedMS) {
+    public Property ease(MathematicalEaser.Variant variant, MathematicalEaser.Type type, double speedMS) {
         switch(dt) {
-            case Number -> { easers.clear(); easers.add(new Easer(variant,type,speedMS,() -> number)); }
-            case Color -> { easers.clear(); easers.addAll(new Easer(variant,type,speedMS,() -> (double)color.red()),new Easer(variant,type,speedMS,() -> (double)color.green()),new Easer(variant,type,speedMS,() -> (double)color.blue()),new Easer(variant,type,speedMS,() -> (double)color.blue()),new Easer(variant,type,speedMS,() -> (double)color.alpha())); }
+            case Number -> { easers.clear(); easers.add(new MathematicalEaser(variant,type,speedMS,() -> number)); }
+            case Color -> { easers.clear(); easers.addAll(new MathematicalEaser(variant,type,speedMS,() -> (double)color.red()),new MathematicalEaser(variant,type,speedMS,() -> (double)color.green()),new MathematicalEaser(variant,type,speedMS,() -> (double)color.blue()),new MathematicalEaser(variant,type,speedMS,() -> (double)color.blue()),new MathematicalEaser(variant,type,speedMS,() -> (double)color.alpha())); }
             default -> { easers.clear(); }
         }
         return this;

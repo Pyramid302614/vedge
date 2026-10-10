@@ -29,7 +29,30 @@ public class JSONObject {
     public JSONObject o(String key) {
         return get(key).asJSONObject();
     }
-
+    public JSONObject s(String k, JSONValue v) {
+        set(k,v);
+        return this;
+    }
+    public JSONObject s(String k, JSONObject v) {
+        set(k,v);
+        return this;
+    }
+    public JSONObject s(String k, String v) {
+        set(k,v);
+        return this;
+    }
+    public JSONObject s(String k, int v) {
+        set(k,v);
+        return this;
+    }
+    public JSONObject s(String k, double v) {
+        set(k,v);
+        return this;
+    }
+    public JSONObject s(String k, boolean v) {
+        set(k,v);
+        return this;
+    }
 
 
     public JSONValue get(int index) {

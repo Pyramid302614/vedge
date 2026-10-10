@@ -34,6 +34,7 @@ public class ModifiedGraphics extends Graphics {
         return this;
     }
 
+    // 0 - 100
     public ModifiedGraphics setTransparency(double t) {
         transparency = t;
         fill(fill);
@@ -126,6 +127,11 @@ public class ModifiedGraphics extends Graphics {
     }
     public double textHeight() {
         return rh(super.textHeight());
+    }
+
+    @Override
+    public String toString() {
+        return "ModifiedGraphics : x" + xOffset + " : y" + yOffset + " : w" + xScale + " : h" + yScale;
     }
 
 }

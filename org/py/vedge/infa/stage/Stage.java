@@ -1,13 +1,18 @@
-package org.py.vedge.infa;
+package org.py.vedge.infa.stage;
 
 import org.py.vedge.graphics.Graphics;
+import org.py.vedge.graphics.ModifiedGraphics;
 import org.py.vedge.ii.Entity;
 import org.py.vedge.ii.LevelMap;
 import org.py.vedge.ii.Player;
 import org.py.vedge.ii.TokenGroup;
 import org.py.vedge.ii.elements.Element;
 import org.py.vedge.ii.elements.ElementGroup;
+import org.py.vedge.infa.Debug;
+import org.py.vedge.infa.Timers;
+import org.py.vedge.infa.Window;
 import org.py.vedge.infa.java.Error;
+import org.py.vedge.infa.java.Time;
 import org.py.vedge.util.Sparry;
 
 import java.util.HashMap;
@@ -17,27 +22,60 @@ public class Stage {
     private static String activeStage;
     private static String graceStage;
 
+    private static StageTransition transition = StageTransition.NONE;
+    private static long transitionTimestamp = -1; // -1 if no transition at the moment
+
     public static HashMap<String,Stage> stages = new HashMap<>();
 
     public static void activate(String stage) {
-        if(activeStage != null) {
-            if(active().grace > 0) {
-                graceStage = active().name;
-                Timers.create(() -> graceStage = null,active().grace);
-            }
-            if(active().linger > 0) {
-                Timers.create(() -> {
-                    activeStage = null;
-                    activate(stage);
-                },active().linger);
-                active().exit();
+        activate(stage,null);
+    }
+    public static void activate(String stage, Runnable then) {
+        if(!stages.containsKey(stage)) {
+            new Error("An attempt was made to switch to a non-existent stage: " + stage);
+            return;
+        }
+        Stage active = active();
+        Stage s = stages.get(stage);
+        Runnable iii = () -> {
+            activeStage = stage;
+            active().enter();
+            if(then != null) then.run();
+        };
+        Runnable ii = () -> {
+            transition = s.appliedTransition;
+            transitionTimestamp = Time.nowMs();
+            Timers.create(iii,(long)(s.appliedTransition.length*s.appliedTransition.transitionAt));
+            Timers.create(() -> {
+                transition = StageTransition.NONE;
+                transitionTimestamp = -1;
+            },s.appliedTransition.length);
+        };
+        Runnable i = () -> {
+            if(active == null) {
+                ii.run();
                 return;
             }
-            active().exit();
-        }
+            if(active.grace > 0) {
+                graceStage = active().name;
+                Timers.create(() -> graceStage = null,active.grace);
+                ii.run();
+            }
+            if(active.linger > 0) Timers.create(ii,active.linger);
+            active.exit();
+        };
+        i.run();
+    }
+    public static void jumpTo(String stage) {
+        active().exit();
         activeStage = stage;
-        if(!stages.containsKey(stage)) new Error("An attempt was made to switch to a non-existent stage: " + stage);
         active().enter();
+    }
+    public static void transitionTo(String stage, StageTransition transition) {
+        Stage s = stages.get(stage);
+        StageTransition buffer = s.appliedTransition;
+        s.applyTransition(transition);
+        activate(stage,() -> s.applyTransition(buffer));
     }
     public static void activate(String... stages) {
         for(int i = 0; i < stages.length-1; i++) {
@@ -74,8 +112,8 @@ public class Stage {
     public static void renderStage() {
         active().render(Window.graphics);
         if(graceStage != null) stages.get(graceStage).render(Window.graphics);
+        if(transitionTimestamp != -1) transition.draw(new ModifiedGraphics(Window.graphics,Window.position.x,Window.position.y,Window.size.w,Window.size.h), (double)(Time.nowMs() - transitionTimestamp)/transition.length);
     }
-
 
     private int grace = 0;
     public Stage grace(int graceMS) {
@@ -93,6 +131,8 @@ public class Stage {
     private final TokenGroup tokens = new TokenGroup();
     private final ElementGroup elements = new ElementGroup();
     private final String name;
+
+    private StageTransition appliedTransition = StageTransition.NONE;
 
     public Stage(String name) {
 
@@ -129,9 +169,9 @@ public class Stage {
             if(i.loaded()) i.render(g);
         });
 
-        if(Debug.RENDER_TOKEN_HITBOXES) {
+        if(Debug.RENDER_ENTITY_HITBOXES) {
             g.noFill();
-            g.stroke(Debug.RENDER_TOKEN_HITBOXES_Color);
+            g.stroke(Debug.RENDER_ENTITY_HITBOXES_Color);
             g.strokeWeight(2);
             entities.forEach(e -> {
                 double[] X = new double[e.hitbox.length];
@@ -181,6 +221,9 @@ public class Stage {
     public void setLevelMap(LevelMap levelMap) {
         this.levelMap = levelMap;
         tokens.addSecondaries(levelMap.asTokens());
+    }
+    public void applyTransition(StageTransition transition) {
+        appliedTransition = transition;
     }
 
     public void addElements(Element... elements) {

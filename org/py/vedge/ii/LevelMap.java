@@ -2,6 +2,8 @@ package org.py.vedge.ii;
 
 import org.py.vedge.data.Bit;
 import org.py.vedge.data.BitCluster;
+import org.py.vedge.data.JSON;
+import org.py.vedge.data.JSONObject;
 import org.py.vedge.graphics.Graphics;
 import org.py.vedge.graphics.ModifiedGraphics;
 import org.py.vedge.infa.java.Resources;
@@ -11,50 +13,23 @@ import java.util.HashMap;
 
 public class LevelMap extends Map<LevelTile> {
 
-//    public static LevelMap2D current;
-//    public static HashMap<String,LevelMap2D> cached = new HashMap<>();
-//    public static HashMap<String,String> paths = new HashMap<>();
-//    public static HashMap<String,LevelTileSet> tileSets = new HashMap<>();
-//
-//    public void load() {
-//        cached.put(name,this);
-//        current = this;
-//    }
-//    public static void load(String name) {
-//        if(cached.containsKey(name)) {
-//            current = cached.get(name);
-//            return;
-//        }
-//        if(!paths.containsKey(name)) {
-//            ErrorHandler.silent("An attempt was made to load level map \"" + name + "\", but no LevelMap2D::addLevelMap call was made with that name!");
-//            return;
-//        }
-//        LevelMap2D map = LevelMap2D.fromFile(paths.get(name),tileSets.get(name));
-//        cached.put(name,map);
-//        current = map;
-//    }
-//    public static void unloadCurrent() {
-//        current = null;
-//    }
-//    public static void clearCache() {
-//        cached.clear();
-//    }
-
     public void tick() {
         forEach(i -> {
             if(i != null) i.tick();
         });
     }
 
-
-
-
     public final String name;
     public final LevelTileSet tileSet;
+    public JSONObject metadata;
 
     public LevelMap(String name, LevelTileSet tileSet) {
+        this(name,tileSet,new JSONObject());
+    }
+    public LevelMap(String name, LevelTileSet tileSet, JSONObject metadata) {
         this.name = name;
         this.tileSet = tileSet;
+        this.metadata = metadata;
     }
 
 
@@ -81,13 +56,6 @@ public class LevelMap extends Map<LevelTile> {
     }
 
 
-
-//    public static void addLevelMap(String name, String path, LevelTileSet tileSet) {
-//        paths.put(name,path);
-//        tileSets.put(name,tileSet);
-//    }
-
-
     public static LevelMap fromFile(String path, LevelTileSet tileSet) {
 
         return parse(Resources.getRawContents_safe(path),tileSet);
@@ -95,26 +63,28 @@ public class LevelMap extends Map<LevelTile> {
     }
     public void toFile(String path) {
 
-        Resources.overrideContents_safe(path,toRaw().toUTF8());
+        Resources.overrideRawContents_safe(path,toRaw());
 
     }
     public static LevelMap parse(BitCluster raw, LevelTileSet tileSet) {
 
         if(raw == null) return null;
-        raw.setByteSize(8);
 
-        int nameLength = raw.getRangeAsInt(0,16); // in bytes
+        long metadataLocation = -1; // In bits
+
+        int keySize = raw.getRangeAsInt(0,8);
+        int nameLength = raw.getRangeAsInt(8,24); // in bytes
         StringBuilder name = new StringBuilder();
         for(int i = 0; i < nameLength; i++) name.append((char)(raw.getByte(2 + i)));
-        int keySize = Math.max((int)Math.ceil(Math.log(tileSet.v().length)/Math.log(2)),2); /*while(Math.pow(2,keySize) < tileSet.v().length) keySize++;*/
 
         LevelMap output = new LevelMap(name.toString(),tileSet);
 
         int y = 0;
         int x = 0;
-        for(int i = 0; i < (raw.getRawContents().length-16-nameLength*8)/keySize; i++) {
+        for(int i = 0; i < (raw.getRawContents().length-24-nameLength*8)/keySize; i++) {
 
-            int index = 16 + nameLength*8 + i * keySize;
+            // i = bytes -- index = [bits, literal position]
+            int index = 24 + nameLength*8 + i * keySize;
             Bit[] keyBuffer = new Bit[keySize];
 
             for(int j = 0; j < keySize; j++) {
@@ -122,15 +92,22 @@ public class LevelMap extends Map<LevelTile> {
             }
 
             int key = new BitCluster(keyBuffer).toInteger();
-
-            if(key == Math.pow(2,keySize)-1) {
+            if(key == Math.pow(2,keySize)-1) { // New line
                 y++;
                 x = 0;
+            } else if(key == Math.pow(2,keySize)-2) { // Metadata declaration
+                metadataLocation = index+keySize;
+                break;
             } else {
-//                System.out.println(tileSet.v().get(key));
                 output.set(x,y,tileSet.get(key)); // key = index in tile set
                 x++;
             }
+
+        }
+
+        if(metadataLocation != -1) {
+//            System.out.println(raw.getRangeAsString(metadataLocation,raw.length()));
+            output.metadata = JSON.parse(raw.getRangeAsString(metadataLocation,raw.length()));
 
         }
 
@@ -144,23 +121,29 @@ public class LevelMap extends Map<LevelTile> {
 
         BitCluster bits = new BitCluster();
 
+        int keySize = Math.max((int)Math.ceil(Math.log(tileSet.v().length)/Math.log(2)),2)+1; // +1 = room for FF and FE
+
+        bits.append(8,BitCluster.fromInteger(keySize,8).getRawContents());
         bits.append(16,BitCluster.fromInteger(name.length(),16).getRawContents());
         bits.append(BitCluster.fromUTF8(name).getRawContents());
-
-        int keySize = Math.max((int)Math.ceil(Math.log(tileSet.v().length)/Math.log(2)),2);
 
         for(int y = 0; y < map.length; y++) {
             for(int x = 0; x < map.get(y).length; x++) {
                 bits.append(keySize,BitCluster.fromInteger(get(x,y).key,keySize).getRawContents());
             }
-            if(y != map.length-1) bits.append(BitCluster.fromInteger(keySize-1,keySize).getRawContents());
+            if(y != map.length-1) bits.append(BitCluster.fromInteger((int)Math.pow(2,keySize)-1,keySize).getRawContents());
+        }
+
+        if(metadata.length() > 0) {
+            bits.append(BitCluster.fromInteger((int)Math.pow(2,keySize)-2,keySize).getRawContents());
+            bits.append(BitCluster.fromUTF8(JSON.stringify(metadata,0)).getRawContents());
         }
 
         return bits;
 
     }
 
-    public static LevelMap fromStringFormat(String name, String[] array, HashMap<Character,Integer> lookup) {
+    public static LevelMap fromStringFormat(String name, String[] array, HashMap<Character,Integer> lookup, JSONObject metadata) {
 
         Sparry<LevelTile> s = new Sparry<>();
         lookup.forEach((k,v) -> s.add(null));
@@ -172,6 +155,8 @@ public class LevelMap extends Map<LevelTile> {
                 map.set(x,y,new LevelTile(lookup.get(c)));
             }
         }
+        map.metadata = metadata;
+
         return map;
 
     }
