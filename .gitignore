@@ -5,3 +5,4 @@ out
 .idea
 *.tst*
 org/py/vedge_test
+test*
