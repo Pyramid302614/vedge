@@ -1,6 +1,6 @@
 package org.py.vedge.ii;
 
-import org.py.vedge.graphics.Graphics;
+import org.py.vedge.graphics.external.Graphics;
 
 import java.awt.*;
 
@@ -24,7 +24,7 @@ public class Token {
         return y - position.y;
     }
 
-    public void tokenRender(org.py.vedge.graphics.Graphics g) {}
+    public void tokenRender(Graphics g) {}
     public final void render(Graphics g) {
 
         tokenRender(g);

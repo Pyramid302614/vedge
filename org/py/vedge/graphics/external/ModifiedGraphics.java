@@ -1,6 +1,7 @@
-package org.py.vedge.graphics;
+package org.py.vedge.graphics.external;
 
 import javafx.scene.text.Font;
+import org.py.vedge.graphics.Color;
 
 public class ModifiedGraphics extends Graphics {
 

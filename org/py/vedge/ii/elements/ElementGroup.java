@@ -1,6 +1,6 @@
 package org.py.vedge.ii.elements;
 
-import org.py.vedge.graphics.Graphics;
+import org.py.vedge.graphics.external.Graphics;
 import org.py.vedge.util.Sparry;
 
 public class ElementGroup  {

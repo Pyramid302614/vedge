@@ -1,9 +1,12 @@
-package org.py.vedge.graphics;
+package org.py.vedge.graphics.external;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.Text;
+import org.py.vedge.graphics.Color;
+import org.py.vedge.graphics.GraphicsAdapter;
+import org.py.vedge.graphics.Image;
 
 public class Graphics implements GraphicsAdapter {
 

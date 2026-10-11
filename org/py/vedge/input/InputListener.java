@@ -1,8 +1,8 @@
 package org.py.vedge.input;
 
 import org.py.vedge.infa.Settings;
+import org.py.vedge.infa.external.Window;
 import org.py.vedge.util.Sparry;
-import org.py.vedge.infa.Window;
 
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -23,8 +23,8 @@ public class InputListener {
 
     public static void configure() {
 
-        Window.scene.setOnKeyPressed(ke -> keyboardEvent(true,ke.getCode().getCode()));
-        Window.scene.setOnKeyReleased(ke -> keyboardEvent(false,ke.getCode().getCode()));
+        Window.vg.setOnKeyPressed(ke -> keyboardEvent(true,ke.code()));
+        Window.vg.setOnKeyReleased(ke -> keyboardEvent(false,ke.code()));
 
     }
 

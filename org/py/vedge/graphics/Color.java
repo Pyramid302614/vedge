@@ -18,7 +18,8 @@ public class Color {
             new Vector2<>("purple",new int[] {85,0,170}),
             new Vector2<>("magenta",new int[] {170,0,85}),
             new Vector2<>("white",new int[] {255,255,255}),
-            new Vector2<>("gray",new int[] {150,150,150})
+            new Vector2<>("gray",new int[] {150,150,150}),
+            new Vector2<>("light_gray",new int[] {200,200,200})
     };
 
     private int[] rgb = { 0, 0, 0 };
@@ -123,6 +124,7 @@ public class Color {
     public static final Color MAGENTA = new Color("magenta");
     public static final Color WHITE = new Color("white");
     public static final Color GRAY = new Color("gray");
+    public static final Color LIGHT_GRAY = new Color("light_gray");
     public static final Color BLANK = new Color(0,0,0,0);
 
     public static javafx.scene.paint.Color colorAwt_to_colorFx(java.awt.Color awt, javafx.scene.paint.Color fx) {

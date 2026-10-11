@@ -15,5 +15,7 @@ module vedge {
     exports org.py.vedge.infa.java;
     exports org.py.vedge.ii.elements;
     exports org.py.vedge.infa.stage;
+    exports org.py.vedge.graphics.external;
+    exports org.py.vedge.infa.external;
 
 }

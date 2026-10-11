@@ -2,7 +2,7 @@ package org.py.vedge.ii.elements;
 
 import javafx.scene.text.FontPosture;
 import org.py.vedge.graphics.Color;
-import org.py.vedge.graphics.ModifiedGraphics;
+import org.py.vedge.graphics.external.ModifiedGraphics;
 import org.py.vedge.ii.Bounds;
 import org.py.vedge.ii.Dimension;
 

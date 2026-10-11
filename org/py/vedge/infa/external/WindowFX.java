@@ -1,4 +1,4 @@
-package org.py.vedge.infa;
+package org.py.vedge.infa.external;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -7,17 +7,19 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import org.py.vedge.graphics.Graphics;
+import org.py.vedge.graphics.external.Graphics;
 import org.py.vedge.ii.Bounds;
 import org.py.vedge.ii.Dimension;
 import org.py.vedge.ii.Position;
+import org.py.vedge.infa.Frame;
+import org.py.vedge.infa.Settings;
 import org.py.vedge.util.Sparry;
 
-public class Window extends Application {
+public class WindowFX extends Application {
 
     private static boolean windowInitialized = false;
 
-    public static org.py.vedge.graphics.Graphics graphics;
+    public static Graphics graphics;
 
     public static final Position position = new Position(0,0);
     public static Position windowPosition = new Position(
@@ -62,10 +64,10 @@ public class Window extends Application {
         stage.setTitle(Settings.get("vedge.window.name").asString());
         stage.setScene(scene);
 
-        Window.stage = stage;
-        Window.scene = scene;
-        Window.root = root;
-        Window.canvas = canvas;
+        WindowFX.stage = stage;
+        WindowFX.scene = scene;
+        WindowFX.root = root;
+        WindowFX.canvas = canvas;
 
         if(Settings.get("vedge.window.exit_on_close").asBoolean())
             stage.setOnCloseRequest(e -> {
@@ -93,7 +95,7 @@ public class Window extends Application {
     }
 
     public static void go() {
-        new Window();
+        new WindowFX();
         Application.launch();
     }
 

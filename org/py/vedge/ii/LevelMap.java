@@ -4,8 +4,8 @@ import org.py.vedge.data.Bit;
 import org.py.vedge.data.BitCluster;
 import org.py.vedge.data.JSON;
 import org.py.vedge.data.JSONObject;
-import org.py.vedge.graphics.Graphics;
-import org.py.vedge.graphics.ModifiedGraphics;
+import org.py.vedge.graphics.external.Graphics;
+import org.py.vedge.graphics.external.ModifiedGraphics;
 import org.py.vedge.infa.java.Resources;
 import org.py.vedge.util.Sparry;
 
