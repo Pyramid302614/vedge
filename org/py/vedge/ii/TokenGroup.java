@@ -1,7 +1,7 @@
 package org.py.vedge.ii;
 
+import org.py.vedge.infa.external.Window;
 import org.py.vedge.util.Sparry;
-import org.py.vedge.infa.Window;
 
 public class TokenGroup {
 
@@ -33,7 +33,7 @@ public class TokenGroup {
 
     }
     public void renderAll() {
-        all.forEach(i -> i.render(Window.graphics));
+        all.forEach(i -> i.render(Window.vg.graphics));
     }
 
 }

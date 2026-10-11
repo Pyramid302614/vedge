@@ -1,7 +1,7 @@
 package org.py.vedge.ii;
 
 import org.py.vedge.graphics.Color;
-import org.py.vedge.graphics.ModifiedGraphics;
+import org.py.vedge.graphics.external.ModifiedGraphics;
 
 public class LevelTile extends Token {
 

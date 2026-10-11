@@ -3,13 +3,16 @@ package org.py.vedge;
 import org.py.vedge.data.JSONFile;
 import org.py.vedge.data.JSONValue;
 import org.py.vedge.i.IterativeEaser;
-import org.py.vedge.infa.*;
+import org.py.vedge.infa.Frame;
 import org.py.vedge.infa.Process;
+import org.py.vedge.infa.Settings;
+import org.py.vedge.infa.Timers;
+import org.py.vedge.infa.external.Window;
 import org.py.vedge.infa.java.ErrorHandler;
 import org.py.vedge.infa.java.Time;
 import org.py.vedge.infa.stage.Stage;
-import org.py.vedge.util.Observer;
 import org.py.vedge.input.InputListener;
+import org.py.vedge.util.Observer;
 
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -39,7 +42,7 @@ public class Vedge {
 
         // Input
         InputListener.compileInputGroups();
-        Window.addOnInitFinish(InputListener::configure);
+        Window.vg.addOnInitFinish(InputListener::configure);
 
         // Frame processes
         Frame.frameProcesses(

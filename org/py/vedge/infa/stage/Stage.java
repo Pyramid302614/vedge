@@ -1,7 +1,7 @@
 package org.py.vedge.infa.stage;
 
-import org.py.vedge.graphics.Graphics;
-import org.py.vedge.graphics.ModifiedGraphics;
+import org.py.vedge.graphics.external.Graphics;
+import org.py.vedge.graphics.external.ModifiedGraphics;
 import org.py.vedge.ii.Entity;
 import org.py.vedge.ii.LevelMap;
 import org.py.vedge.ii.Player;
@@ -10,7 +10,7 @@ import org.py.vedge.ii.elements.Element;
 import org.py.vedge.ii.elements.ElementGroup;
 import org.py.vedge.infa.Debug;
 import org.py.vedge.infa.Timers;
-import org.py.vedge.infa.Window;
+import org.py.vedge.infa.external.Window;
 import org.py.vedge.infa.java.Error;
 import org.py.vedge.infa.java.Time;
 import org.py.vedge.util.Sparry;
@@ -110,9 +110,9 @@ public class Stage {
         if(graceStage != null) stages.get(graceStage).collide();
     }
     public static void renderStage() {
-        active().render(Window.graphics);
-        if(graceStage != null) stages.get(graceStage).render(Window.graphics);
-        if(transitionTimestamp != -1) transition.draw(new ModifiedGraphics(Window.graphics,Window.position.x,Window.position.y,Window.size.w,Window.size.h), (double)(Time.nowMs() - transitionTimestamp)/transition.length);
+        active().render(Window.vg.graphics);
+        if(graceStage != null) stages.get(graceStage).render(Window.vg.graphics);
+        if(transitionTimestamp != -1) transition.draw(new ModifiedGraphics(Window.vg.graphics, Window.vg.position.x, Window.vg.position.y, Window.vg.size.w, Window.vg.size.h), (double)(Time.nowMs() - transitionTimestamp)/transition.length);
     }
 
     private int grace = 0;

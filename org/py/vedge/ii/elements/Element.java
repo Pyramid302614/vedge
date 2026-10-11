@@ -1,13 +1,13 @@
 package org.py.vedge.ii.elements;
 
 import org.py.vedge.graphics.Color;
-import org.py.vedge.graphics.Graphics;
-import org.py.vedge.graphics.ModifiedGraphics;
+import org.py.vedge.graphics.external.Graphics;
+import org.py.vedge.graphics.external.ModifiedGraphics;
 import org.py.vedge.ii.Bounds;
 import org.py.vedge.ii.Position;
 import org.py.vedge.ii.Token;
 import org.py.vedge.infa.Debug;
-import org.py.vedge.infa.Window;
+import org.py.vedge.infa.external.Window;
 
 public class Element extends Token {
 
@@ -79,7 +79,7 @@ public class Element extends Token {
         calculateBounds(new ModifiedGraphics(g,0,0,scaleX,scaleY));
         Bounds bounds = getBounds();
         if(bounds != null && alignment != Property.P_Alignment.None) {
-            Bounds parentBounds = ((parent == null || parent.getBounds() == null) ? Window.getBounds() : parent.getBounds());
+            Bounds parentBounds = ((parent == null || parent.getBounds() == null) ? Window.vg.getBounds() : parent.getBounds());
             yOff = switch(alignment) {
                 case LeftCenter, RightCenter, TopCenter, BottomCenter, Center -> {
                     xOff = parentBounds.position().x + ( parentBounds.dimension().w - bounds.dimension().w ) / 2;

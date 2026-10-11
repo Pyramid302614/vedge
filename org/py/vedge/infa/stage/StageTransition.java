@@ -1,6 +1,6 @@
 package org.py.vedge.infa.stage;
 
-import org.py.vedge.graphics.ModifiedGraphics;
+import org.py.vedge.graphics.external.ModifiedGraphics;
 
 import java.util.function.BiConsumer;
 

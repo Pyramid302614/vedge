@@ -1,7 +1,7 @@
 package org.py.vedge.ii;
 
-import org.py.vedge.graphics.Graphics;
-import org.py.vedge.graphics.ModifiedGraphics;
+import org.py.vedge.graphics.external.Graphics;
+import org.py.vedge.graphics.external.ModifiedGraphics;
 import org.py.vedge.infa.Debug;
 
 public record Bounds(Position position, Dimension dimension) {
