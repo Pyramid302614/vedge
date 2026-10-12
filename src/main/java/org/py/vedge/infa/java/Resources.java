@@ -11,8 +11,7 @@ public class Resources {
     public static String resolve(String path) {
 
         // starts with : -> appdata root
-        // starts with / -> project root
-
+        // starts with ; -> project root
         return switch(path.charAt(0)) {
             case ';' -> System.getProperty("user.dir") + path.substring(1);
             case ':' -> OS.resolveEnvFromString(JSONFile.file("vedge_main").get("app_data_path").asString()) + path.substring(1);

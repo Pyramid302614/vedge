@@ -102,14 +102,17 @@ public class Stage {
     }
 
     public static void tickStage() {
+        if(active() == null) return;
         active().tick();
         if(graceStage != null) stages.get(graceStage).tick();
     }
     public static void collideStage() {
+        if(active() == null) return;
         active().collide();
         if(graceStage != null) stages.get(graceStage).collide();
     }
     public static void renderStage() {
+        if(active() == null) return;
         active().render(Window.vg.graphics);
         if(graceStage != null) stages.get(graceStage).render(Window.vg.graphics);
         if(transitionTimestamp != -1) transition.draw(new ModifiedGraphics(Window.vg.graphics, Window.vg.position.x, Window.vg.position.y, Window.vg.size.w, Window.vg.size.h), (double)(Time.nowMs() - transitionTimestamp)/transition.length);

@@ -1,6 +1,5 @@
 package org.py.vedge.graphics.external;
 
-import javafx.scene.text.Font;
 import org.py.vedge.graphics.Color;
 
 public class ModifiedGraphics extends Graphics {
@@ -12,11 +11,11 @@ public class ModifiedGraphics extends Graphics {
     private double transparency = 100;
 
     public ModifiedGraphics(Graphics graphics) {
-        super(graphics.gc);
+        super();
     }
 
     public ModifiedGraphics(Graphics graphics, double xOffset, double yOffset, double xScale, double yScale) {
-        super(graphics.gc);
+        super();
         this.xOffset = xOffset;
         this.yOffset = yOffset;
         this.xScale = xScale;
@@ -44,34 +43,34 @@ public class ModifiedGraphics extends Graphics {
     }
 
     private double tx(double x) {
-        return x*xScale+xOffset;
+        return Math.round(x*xScale+xOffset);
     } // Translate X
     private double ty(double y) {
-        return y*yScale+yOffset;
+        return Math.round(y*yScale+yOffset);
     } // Translate Y
     private double tw(double w) {
-        return w*xScale;
+        return Math.round(w*xScale);
     } // Translate Width
     private double th(double h) {
-        return h*yScale;
+        return Math.round(h*yScale);
     } // Translate Height
     private double td(double d) {
-        return d*((xScale+yScale)/2);
+        return Math.round(d*((xScale+yScale)/2));
     } // Translate Dimension
     private double rx(double x) {
-        return (x-xOffset)/xScale;
+        return Math.round((x-xOffset)/xScale);
     }
     private double ry(double y) {
-        return (y-yOffset)/yScale;
+        return Math.round((y-yOffset)/yScale);
     }
     private double rw(double w) {
-        return w/xScale;
+        return Math.round(w/xScale);
     }
     private double rh(double h) {
-        return h/yScale;
+        return Math.round(h/yScale);
     }
     private double rd(double d) {
-        return d/((xScale+yScale)/2);
+        return Math.round(d/((xScale+yScale)/2));
     }
 
     @Override
@@ -82,6 +81,7 @@ public class ModifiedGraphics extends Graphics {
     public void stroke(Color color) {
         super.stroke(new Color(color.red(),color.green(),color.blue(),(int)(color.alpha()*transparency/100)));
     }
+
     @Override
     public void rect(double x, double y, double w, double h) {
         super.rect(tx(x),ty(y),tw(w),th(h));
@@ -116,16 +116,18 @@ public class ModifiedGraphics extends Graphics {
     }
 
     @Override
-    public void updateFont() {
-        gc.setFont(Font.font(textFamily,textPosture,td(textSize)));
+    public void textSize(int size) {
+        super.textSize((int)Math.round(td(size)));
     }
-
+    @Override
     public double textWidth(String s) {
         return rw(super.textWidth(s));
     }
+    @Override
     public double textAscent() {
         return rh(super.textAscent());
     }
+    @Override
     public double textHeight() {
         return rh(super.textHeight());
     }

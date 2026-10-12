@@ -1,7 +1,6 @@
 package org.py.vedge.ii.elements;
 
-import javafx.scene.text.FontPosture;
-import org.py.vedge.graphics.Color;
+import org.py.vedge.graphics.external.Font;
 import org.py.vedge.graphics.external.ModifiedGraphics;
 import org.py.vedge.ii.Bounds;
 import org.py.vedge.ii.Dimension;
@@ -16,31 +15,22 @@ public class Label extends Element {
 
     private Bounds bounds;
 
-    public String family = "Arial";
-    public FontPosture posture = FontPosture.REGULAR;
-    public double size = 12;
-    public Color color = Color.BLACK;
-
-    public Label font(String family, FontPosture posture, double size, Color color) {
-        this.family = family;
-        this.posture = posture;
-        this.size = size;
-        this.color = color;
-        return this;
-    }
+    public Font font = Font.ARIAL;
 
     public Label(String text) {
         this.text = text;
     }
 
+    public Label font(Font font) {
+        this.font = font;
+        return this;
+    }
+
     @Override
     public void elementRender(ModifiedGraphics mg) {
 
-        mg.textFamily(family);
-        mg.textPosture(posture);
-        mg.textSize(size);
+        mg.setFont(font);
 
-        mg.fillNoStroke(color);
         mg.text(text,position.x,position.y,0,mg.textAscent());
 
     }
@@ -52,9 +42,7 @@ public class Label extends Element {
 
     @Override
     public void calculateBounds(ModifiedGraphics mg) {
-        mg.textFamily(family);
-        mg.textPosture(posture);
-        mg.textSize(size);
+        mg.setFont(font);
         bounds = new Bounds(
                 position,
                 new Dimension(

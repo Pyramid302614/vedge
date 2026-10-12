@@ -49,6 +49,12 @@ public class Color {
     }
     public int alpha() {
         return a;
+    } // 0-255
+    public boolean blank() {
+        return a == 0;
+    }
+    public boolean opaque() {
+        return a == 1;
     }
 
     public void set(int r, int g, int b) {
@@ -96,14 +102,6 @@ public class Color {
         }
     }
 
-    // Remove method if javafx.scene.paint.Color is underlined red
-    public javafx.scene.paint.Color toColorFX() {
-        if(!value) {
-            return javafx.scene.paint.Color.rgb(rgb[0], rgb[1], rgb[2], Math.max(Math.min((double)a/255,1),0));
-        }
-        return null; // Doesn't support HEX
-    }
-
     public String toCSS() {
         if(value) {
             return hex;
@@ -127,18 +125,18 @@ public class Color {
     public static final Color LIGHT_GRAY = new Color("light_gray");
     public static final Color BLANK = new Color(0,0,0,0);
 
-    public static javafx.scene.paint.Color colorAwt_to_colorFx(java.awt.Color awt, javafx.scene.paint.Color fx) {
-        return new javafx.scene.paint.Color(awt.getRed(),awt.getGreen(),awt.getBlue(),awt.getAlpha());
-    }
-
     @Override
     public Color clone() {
-        try {
-            return (Color) super.clone();
-        } catch(CloneNotSupportedException e) {
-            ErrorHandler.silent(e);
-            return this;
-        }
+        return new Color(rgb[0],rgb[1],rgb[2],a);
+    }
+
+    public static boolean equals(Color color1, Color color2) {
+        return (
+            color1.red() == color2.red() &&
+            color1.green() == color2.green() &&
+            color1.blue() == color2.blue() &&
+            color1.alpha() == color2.alpha()
+        );
     }
 
 }

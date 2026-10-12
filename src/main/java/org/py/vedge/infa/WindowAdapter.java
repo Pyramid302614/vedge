@@ -50,21 +50,12 @@ public abstract class WindowAdapter {
         onInitFinishes.add(runnable);
     }
 
-    public void go() {
+    public void go(Runnable passTheMic) {
 
         if(windowInitialized) return;
         else windowInitialized = true;
 
-        i_setTitle(Settings.get("vedge.window.name").asString());
-        i_setPosition(position);
-        i_setSize(size);
-        i_initDraw(this::draw);
-        if(Settings.get("vedge.window.exit_on_close").asBoolean()) i_setCloseOperation(() -> System.exit(0));
-        graphics = i_getGraphics();
-
-        onInitFinishes.forEach(Runnable::run);
-
-        i_show();
+        passTheMic.run(); // Will eventually go to start()
 
     }
 
@@ -75,6 +66,15 @@ public abstract class WindowAdapter {
         }
         Frame.frame();
     }
+    public void start() {
+        i_setTitle(Settings.get("vedge.window.name").asString());
+        i_setPosition(position);
+        i_setSize(size);
+        i_initDraw(this::draw);
+        if(Settings.get("vedge.window.exit_on_close").asBoolean()) i_setCloseOperation(() -> System.exit(0));
+        graphics = i_getGraphics();
+        onInitFinishes.forEach(Runnable::run);
+    }
 
     // i_wont_update_any_internal_variables
 
@@ -82,7 +82,6 @@ public abstract class WindowAdapter {
     public abstract void i_setSize(Dimension size);
     public abstract void i_setPosition(Position position);
     public abstract void i_setCloseOperation(Runnable runnable);
-    public abstract void i_show();
     public abstract void i_initDraw(Runnable runnable);
     public abstract Graphics i_getGraphics();
 
