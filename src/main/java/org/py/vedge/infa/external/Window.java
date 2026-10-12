@@ -2,9 +2,8 @@ package org.py.vedge.infa.external;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
-import org.py.vedge.Vedge;
 import org.py.vedge.graphics.external.Graphics;
 import org.py.vedge.ii.Dimension;
 import org.py.vedge.ii.Position;
@@ -21,21 +20,28 @@ public class Window {
     private static Consumer<KeyEvent> onKeyPressed = (ke) -> {};
     private static Consumer<KeyEvent> onKeyReleased = (ke) -> {};
 
+    private static Lwjgl3ApplicationConfiguration config;
+
+    private static boolean micPassed = false;
+
     public static final WindowAdapter vg = new WindowAdapter() {
 
         @Override
         public void i_setTitle(String title) {
-            Gdx.graphics.setTitle(title);
+            if(micPassed) Gdx.graphics.setTitle(title);
+            else config.setTitle(title);
         }
 
         @Override
         public void i_setSize(Dimension size) {
-            Gdx.graphics.setWindowedMode((int)size.w,(int)size.h);
+            if(micPassed) Gdx.graphics.setWindowedMode((int)size.w,(int)size.h);
+            else config.setWindowedMode((int)size.w,(int)size.h);
         }
 
         @Override
         public void i_setPosition(Position position) {
-            ((Lwjgl3Graphics)Gdx.graphics).getWindow().setPosition((int)position.x,(int)position.y);
+            if(micPassed) ((Lwjgl3Graphics)Gdx.graphics).getWindow().setPosition((int)position.x,(int)position.y);
+            else config.setWindowPosition((int)position.x,(int)position.y);
         }
 
         @Override
@@ -66,16 +72,17 @@ public class Window {
 
     // passTheMic - The method call(s) where the library takes over and exits when the program finishes/closes
     public static void go(Runnable passTheMic) {
+        vg.addOnInitFinish(() -> micPassed = true);
         vg.go(passTheMic);
         closeOperation.run();
     }
 
     // <!> CALL THIS IS IN YOUR ApplicationListener::render!!!!!!!!!!!!!!!!!!!!
-    public static void frame() {
+    public static void onRender() {
         draw.run();
     }
     // <!> ALSO CALL THIS IN YOUR ApplicationListener::create!!!!!!!!!!!!!!!!!!!!
-    public static void start() {
+    public static void onCreate() {
         Gdx.input.setInputProcessor(new InputProcessor() {
             @Override
             public boolean keyDown(int code) {
@@ -125,7 +132,14 @@ public class Window {
             }
 
         });
-        vg.start();
+        vg.afterMicPassed();
+    }
+    public static void onDispose() {
+        if(vg.graphics != null) vg.graphics.dispose();
+    }
+
+    public static void setConfig(Lwjgl3ApplicationConfiguration currentConfig) {
+        config = currentConfig;
     }
 
 }

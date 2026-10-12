@@ -55,25 +55,28 @@ public abstract class WindowAdapter {
         if(windowInitialized) return;
         else windowInitialized = true;
 
-        passTheMic.run(); // Will eventually go to start()
+        i_setTitle(Settings.get("vedge.window.name").asString());
+        i_setPosition(windowPosition);
+        i_setSize(size);
+        i_initDraw(this::draw);
+        if(Settings.get("vedge.window.exit_on_close").asBoolean()) i_setCloseOperation(() -> System.exit(0));
+        onInitFinishes.forEach(Runnable::run);
+
+        passTheMic.run(); // eventually goes to afterMicPassed
 
     }
 
     private void draw() {
         if(renderBackground) {
-            graphics.fill(Color.WHITE);
+            graphics.fillNoStroke(Color.WHITE);
             graphics.rect(0,0,size.w,size.h);
         }
         Frame.frame();
     }
-    public void start() {
-        i_setTitle(Settings.get("vedge.window.name").asString());
-        i_setPosition(position);
-        i_setSize(size);
-        i_initDraw(this::draw);
-        if(Settings.get("vedge.window.exit_on_close").asBoolean()) i_setCloseOperation(() -> System.exit(0));
+
+    public void afterMicPassed() {
         graphics = i_getGraphics();
-        onInitFinishes.forEach(Runnable::run);
+        graphics.resize((int)size.w,(int)size.h);
     }
 
     // i_wont_update_any_internal_variables

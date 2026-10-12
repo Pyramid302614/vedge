@@ -51,17 +51,16 @@ public class Graphics extends GraphicsAdapter {
         ShapeRender(() -> shapeRenderer.rect((float)x,(float)(HEIGHT-y-h),(float)w,(float)h),
             () -> {
                 shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-                shapeRenderer.rectLine((float)x,(float)(HEIGHT-y-h),(float)w,(float)h,(float)strokeWeight);
+                shapeRenderer.rectLine((float)(x-strokeWeight/2),(float)(HEIGHT-y-h),(float)(x+w+strokeWeight/2),(float)(HEIGHT-y-h),(float)strokeWeight);
+                shapeRenderer.rectLine((float)(x+w),(float)(HEIGHT-y-h),(float)(x+w),(float)(HEIGHT-y),(float)strokeWeight);
+                shapeRenderer.rectLine((float)(x+w+strokeWeight/2),(float)(HEIGHT-y),(float)(x-strokeWeight/2),(float)(HEIGHT-y),(float)strokeWeight);
+                shapeRenderer.rectLine((float)x,(float)(HEIGHT-y),(float)x,(float)(HEIGHT-y-h),(float)strokeWeight);
             });
     }
 
     @Override
     public void ellipse(double x, double y, double w, double h) {
-        ShapeRender(() -> shapeRenderer.ellipse((float)x,(float)(HEIGHT-y-h),(float)w,(float)h),
-            () -> {
-                shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-                shapeRenderer.rectLine((float)x,(float)(HEIGHT-y-h),(float)w,(float)h,(float)strokeWeight);
-            });
+        ShapeRender(() -> shapeRenderer.ellipse((float)x,(float)(HEIGHT-y-h),(float)w,(float)h));
     }
 
     @Override
