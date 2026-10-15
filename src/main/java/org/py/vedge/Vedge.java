@@ -23,6 +23,14 @@ public class Vedge {
 
     public static long startupTimestamp = Time.nowMs();
 
+    public static double tickSpeed = 1.0; // 1 = normal, updated at beginning of every frame
+    public static int targetFps = 60; // Configured at start
+    public static int tickRate = 60; // Configured at start
+
+    // TICK SPEED = the speed of ticking things for motion and non-time-bound stuff
+    // TARGET FPS = how often the render() is called
+    // TICK RATE = the speed of ticking, that is "interpolated" by speed when tick rate and fps doesn't match
+
     public static void start() {
 
         // Files
@@ -45,6 +53,8 @@ public class Vedge {
         Window.vg.addOnInitFinish(InputListener::configure);
 
         // Frame processes
+        targetFps = Settings.get("vedge.video.target_fps").asInteger();
+        tickRate = Settings.get("vedge.video.tick_rate").asInteger();
         Frame.frameProcesses(
                 new Process(Stage::tickStage,"Tick Stage","tick_stage"),
                 new Process(Stage::collideStage,"Stage Collision","collide_stage"),

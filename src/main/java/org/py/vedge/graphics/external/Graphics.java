@@ -89,16 +89,13 @@ public class Graphics extends GraphicsAdapter {
     public void textColor(Color color) {
         this.font.setColor(color);
     }
-    @Override
-    public void textAttributes(int s, Color color) {
-        this.font.setAttributes(s,color);
-    }
 
     @Override
     public void text(String text, double x, double y) {
 
         font.getRaster().getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         SpriteRender(() -> {
+            font.getRaster().setColor(Pedro.vg_gdx(font.getColor()));
             font.getRaster().draw(spriteBatch,text,(float)x,(float)(HEIGHT-y+font.getRaster().getAscent()));
         });
 

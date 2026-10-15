@@ -32,6 +32,8 @@ public class Frame {
 
     public static void frame() {
 
+
+
         preFrameTimers.forEach(Process::run);
 
         for(Process process : frameTimers) process.run();

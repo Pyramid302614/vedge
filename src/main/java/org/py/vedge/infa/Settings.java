@@ -11,7 +11,7 @@ public class Settings {
     private static final HashMap<String,JSONValue> compiled = new HashMap<>();
 
     private static final HashMap<String,JSONFile> files = new HashMap<>();
-    
+
     public static void addFile(String name, JSONFile file) {
         files.put(name,file);
         compileFile(name,file);
@@ -83,6 +83,13 @@ public class Settings {
         file.asJSONObject().setValue(settingAddress.substring(settingAddress.split("\\.")[0].length() + 1),value);
         file.syncToDisk();
 
+    }
+
+
+
+
+    public static boolean If(String settingsAddress) {
+        return get(settingsAddress).asBoolean();
     }
 
 

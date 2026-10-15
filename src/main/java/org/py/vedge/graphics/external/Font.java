@@ -1,23 +1,19 @@
 package org.py.vedge.graphics.external;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import org.py.vedge.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import org.py.vedge.infa.external.Pedro;
-import org.py.vedge.infa.java.ErrorHandler;
 import org.py.vedge.infa.java.Resources;
-import org.py.vedge.util.Sparry;
-import org.py.vedge.util.Vector3;
+import org.py.vedge.util.Vector2;
 
 import java.util.HashMap;
-import java.util.function.Supplier;
 
 public class Font {
 
-    public final HashMap<Vector3<String,Integer,Color>,BitmapFont> cachedRasters = new HashMap<>();
+    public final HashMap<Vector2<String,Integer>,BitmapFont> cachedRasters = new HashMap<>();
 
     public final String path;
     private int size = 12;
@@ -42,44 +38,33 @@ public class Font {
         }
         return this;
     }
+    public int getSize() {
+        return size;
+    }
     public Font setColor(Color color) {
-        if(Color.equals(this.color,color)) {
-            this.color = color;
-            raster();
-        }
+        this.color = color;
         return this;
     }
-    public Font setAttributes(int size, Color color) {
-        boolean changed = false;
-        if(this.size != size) {
-            this.size = size;
-            changed = true;
-        }
-        if(Color.equals(this.color,color)) {
-            this.color = color;
-            changed = true;
-        }
-        if(changed) raster();
-        return this;
+    public Color getColor() {
+        return color;
     }
     public Font conform(Font otherFont) {
-        return setAttributes(otherFont.size,otherFont.color);
+        return setSize(otherFont.size).setColor(otherFont.color);
     }
 
     private void raster() {
         // Search cache
-        for(Vector3<String,Integer,Color> k : cachedRasters.keySet()) {
+        for(Vector2<String,Integer> k : cachedRasters.keySet()) {
             if(
                 k.a().equals(path) &&
-                    k.b() == size &&
-                    Color.equals(k.c(),color)
+                    k.b() == size
             ) {
                 raster = cachedRasters.get(k);
                 return;
             }
         }
         // If not found in cache
-        raster = loadFont(path,size,color);
+        raster = loadFont(path,size);
     }
 
     public BitmapFont getRaster() {
@@ -88,18 +73,18 @@ public class Font {
 
     @Override
     public Font clone() {
-        return new Font(path).setAttributes(size,color);
+        return new Font(path).setSize(size).setColor(color);
     }
 
-    private static BitmapFont loadFont(String filePath, int size, Color color) {
+    private static BitmapFont loadFont(String filePath, int size) { // Color is white for ez-pz tinting
 
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(new FileHandle(filePath));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = size;
-        parameter.color = Pedro.vg_gdx(color);
         parameter.genMipMaps = true;
         parameter.minFilter = Texture.TextureFilter.MipMapLinearLinear;
         parameter.magFilter = Texture.TextureFilter.Linear;
+        parameter.color = Pedro.vg_gdx(Color.WHITE);
         parameter.borderStraight = true;
         BitmapFont font = generator.generateFont(parameter);
         generator.dispose();

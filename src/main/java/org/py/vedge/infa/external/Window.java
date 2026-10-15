@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
+import org.py.vedge.Vedge;
 import org.py.vedge.graphics.external.Graphics;
 import org.py.vedge.ii.Dimension;
 import org.py.vedge.ii.Position;
@@ -79,6 +80,7 @@ public class Window {
 
     // <!> CALL THIS IS IN YOUR ApplicationListener::render!!!!!!!!!!!!!!!!!!!!
     public static void onRender() {
+        Vedge.tickSpeed = Gdx.graphics.getDeltaTime()/((float)1/Vedge.tickRate);
         draw.run();
     }
     // <!> ALSO CALL THIS IN YOUR ApplicationListener::create!!!!!!!!!!!!!!!!!!!!

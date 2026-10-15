@@ -37,7 +37,7 @@ public class StageTransition {
             1000,
             0.5,
             (mg,progress) -> {
-                mg.fill(255,255,255,(int)(-255*Math.abs(2*progress-1)+255));
+                mg.fillNoStroke(254,255,255,(int)(-255*Math.abs(2*progress-1)+255));
                 mg.rect(0,0,1,1);
             }
     );

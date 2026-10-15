@@ -17,14 +17,18 @@ public class LevelTile extends Token {
 
     public void tileRender(ModifiedGraphics mg) {}
 
-    public static LevelTile SOLID_SQUARE(int key, Color color) {
+    public static LevelTile SOLID_SQUARE(int key, Color fill, Color stroke) {
         return new LevelTile(key,Polygon.rect(0,0,1,1)) {
             @Override
             public void tileRender(ModifiedGraphics mg) {
-                mg.fill(color);
+                if(fill == null || fill.blank()) mg.noFill(); else mg.fill(fill);
+                if(stroke == null || stroke.blank()) mg.noStroke(); else mg.stroke(stroke);
                 mg.rect(0,0,1,1);
             }
         };
+    }
+    public static LevelTile AIR(int key) {
+        return new LevelTile(key);
     }
 
 }

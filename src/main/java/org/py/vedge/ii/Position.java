@@ -1,5 +1,7 @@
 package org.py.vedge.ii;
 
+import org.py.vedge.Vedge;
+
 public class Position {
 
     public double x = 0;

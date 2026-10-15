@@ -1,8 +1,11 @@
 package org.py.vedge.graphics.external;
 
 import org.py.vedge.graphics.Color;
+import org.py.vedge.graphics.GraphicsAdapter;
 
-public class ModifiedGraphics extends Graphics {
+public class ModifiedGraphics extends GraphicsAdapter {
+
+    private Graphics g;
 
     private double xOffset = 0;
     private double yOffset = 0;
@@ -11,11 +14,11 @@ public class ModifiedGraphics extends Graphics {
     private double transparency = 100;
 
     public ModifiedGraphics(Graphics graphics) {
-        super();
+        g = graphics;
     }
 
     public ModifiedGraphics(Graphics graphics, double xOffset, double yOffset, double xScale, double yScale) {
-        super();
+        g = graphics;
         this.xOffset = xOffset;
         this.yOffset = yOffset;
         this.xScale = xScale;
@@ -37,8 +40,8 @@ public class ModifiedGraphics extends Graphics {
     // 0 - 100
     public ModifiedGraphics setTransparency(double t) {
         transparency = t;
-        fill(fill);
-        stroke(stroke);
+        g.fill(g.fill);
+        g.stroke(g.stroke);
         return this;
     }
 
@@ -75,26 +78,26 @@ public class ModifiedGraphics extends Graphics {
 
     @Override
     public void fill(Color color) {
-        super.fill(new Color(color.red(),color.green(),color.blue(),(int)(color.alpha()*transparency/100)));
+        g.fill(new Color(color.red(),color.green(),color.blue(),(int)(color.alpha()*transparency/100)));
     }
     @Override
     public void stroke(Color color) {
-        super.stroke(new Color(color.red(),color.green(),color.blue(),(int)(color.alpha()*transparency/100)));
+        g.stroke(new Color(color.red(),color.green(),color.blue(),(int)(color.alpha()*transparency/100)));
     }
 
     @Override
     public void rect(double x, double y, double w, double h) {
-        super.rect(tx(x),ty(y),tw(w),th(h));
+        g.rect(tx(x),ty(y),tw(w),th(h));
     }
     public void rect(double x, double y, double w, double h, double ntx, double nty, double ntw, double nth) {
-        super.rect(tx(x)+ntx,ty(y)+nty,tw(w)+ntw,th(h)+nth);
+        g.rect(tx(x)+ntx,ty(y)+nty,tw(w)+ntw,th(h)+nth);
     }
     @Override
     public void ellipse(double x, double y, double w, double h) {
-        super.ellipse(tx(x),ty(y),tw(w),th(h));
+        g.ellipse(tx(x),ty(y),tw(w),th(h));
     }
     public void ellipse(double x, double y, double w, double h, double ntx, double nty, double ntw, double nth) {
-        super.ellipse(tx(x)+ntx,ty(y)+nty,tw(w)+ntw,th(h)+nth);
+        g.ellipse(tx(x)+ntx,ty(y)+nty,tw(w)+ntw,th(h)+nth);
     }
     @Override
     public void polygon(double[] allX, double[] allY) {
@@ -104,33 +107,43 @@ public class ModifiedGraphics extends Graphics {
             translatedX[i] = tx(allX[i]);
             translatedY[i] = tx(allY[i]);
         }
-        super.polygon(translatedX,translatedY);
+        g.polygon(translatedX,translatedY);
     }
 
     @Override
     public void text(String text, double x, double y) {
-        super.text(text,tx(x),ty(y));
+        g.text(text,tx(x),ty(y));
     }
     public void text(String text, double x, double y, double ntx, double nty) {
-        super.text(text,tx(x)+ntx,ty(y)+nty);
+        g.text(text,tx(x)+ntx,ty(y)+nty);
     }
 
     @Override
     public void textSize(int size) {
-        super.textSize((int)Math.round(td(size)));
+        g.textSize((int)Math.round(td(size)));
+    }
+    @Override
+    public void textColor(Color color) {
+        g.textColor(new Color(color.red(),color.green(),color.blue(),(int)(color.alpha()*transparency/100)));
     }
     @Override
     public double textWidth(String s) {
-        return rw(super.textWidth(s));
+        return rw(g.textWidth(s));
     }
     @Override
     public double textAscent() {
-        return rh(super.textAscent());
+        return rh(g.textAscent());
     }
     @Override
     public double textHeight() {
-        return rh(super.textHeight());
+        return rh(g.textHeight());
     }
+
+
+    public void setFont(Font font) {
+        g.setFont(font);
+    }
+
 
     @Override
     public String toString() {

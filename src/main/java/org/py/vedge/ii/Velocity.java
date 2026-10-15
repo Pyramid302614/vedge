@@ -1,5 +1,7 @@
 package org.py.vedge.ii;
 
+import org.py.vedge.Vedge;
+
 public class Velocity {
 
     public double x = 0;
@@ -9,8 +11,8 @@ public class Velocity {
 
     public void tick() {
 
-        if(Math.abs(x) > friction) x -= (Math.abs(x)/x) * (friction); else x = 0.0;
-        if(Math.abs(y) > friction) y -= (Math.abs(y)/y) * (friction); else y = 0.0;
+        if(Math.abs(x) > friction) x -= (Math.abs(x)/x) * (friction * Vedge.tickSpeed); else x = 0.0;
+        if(Math.abs(y) > friction) y -= (Math.abs(y)/y) * (friction * Vedge.tickSpeed); else y = 0.0;
 
     }
 
@@ -20,8 +22,8 @@ public class Velocity {
 
     // [ X, Y ]
     public void push(double x, double y) {
-        this.x += x;
-        this.y += y;
+        this.x += x * Vedge.tickSpeed;
+        this.y += y * Vedge.tickSpeed;
     }
 
 }

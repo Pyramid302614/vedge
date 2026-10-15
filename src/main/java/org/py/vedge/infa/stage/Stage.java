@@ -43,13 +43,17 @@ public class Stage {
             if(then != null) then.run();
         };
         Runnable ii = () -> {
-            transition = s.appliedTransition;
-            transitionTimestamp = Time.nowMs();
-            Timers.create(iii,(long)(s.appliedTransition.length*s.appliedTransition.transitionAt));
-            Timers.create(() -> {
-                transition = StageTransition.NONE;
-                transitionTimestamp = -1;
-            },s.appliedTransition.length);
+            if(s.appliedTransition != StageTransition.NONE) {
+                transition = s.appliedTransition;
+                transitionTimestamp = Time.nowMs();
+                Timers.create(iii,(long)(s.appliedTransition.length*s.appliedTransition.transitionAt));
+                Timers.create(() -> {
+                    transition = StageTransition.NONE;
+                    transitionTimestamp = -1;
+                },s.appliedTransition.length);
+             } else {
+                iii.run();
+            }
         };
         Runnable i = () -> {
             if(active == null) {
@@ -62,6 +66,7 @@ public class Stage {
                 ii.run();
             }
             if(active.linger > 0) Timers.create(ii,active.linger);
+            if(active.grace == 0 && active.linger == 0) ii.run();
             active.exit();
         };
         i.run();
