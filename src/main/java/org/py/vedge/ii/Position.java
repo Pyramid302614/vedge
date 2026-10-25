@@ -42,5 +42,49 @@ public class Position {
         return pos2d;
 
     }
+    public void set(Position other) { // Essentially conform() but without the other stuff
+        x = other.x;
+        y = other.y;
+    }
+    public void set(DoublePoint other) {
+        x = other.x();
+        y = other.y();
+    }
+    public void set(double x, double y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public Position add(double x, double y) {
+        this.x += x;
+        this.y += y;
+        return this;
+    }
+    public Position add(DoublePoint xy) {
+        return add(xy.x(),xy.y());
+    }
+
+    // Returns copy
+    public Position scale(DoublePoint scale) {
+        return new Position(x*scale.x(),y*scale.y());
+    }
+    public Position rScale(DoublePoint scale) {
+        return new Position(x/scale.x(),y/scale.y());
+    }
+    public Position offset(DoublePoint offset) {
+        return new Position(x+offset.x(),y+offset.y());
+    }
+    public Position rOffset(DoublePoint offset) {
+        return new Position(x-offset.x(),y-offset.y());
+    }
+
+    @Override
+    public String toString() {
+        return "Position : x" + x + " y" + y;
+    }
+
+    public DoublePoint toDPoint() {
+        return new DoublePoint(x,y);
+    }
 
 }

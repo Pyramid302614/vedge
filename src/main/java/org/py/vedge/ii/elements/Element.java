@@ -44,6 +44,7 @@ public class Element extends Token {
         styles.set("scale_x",new Property(1));
         styles.set("scale_y",new Property(1));
         styles.set("scale_center",new Property(Property.P_Alignment.Center));
+        collidable = false;
     }
 
     public void onEnter() {}
@@ -113,8 +114,8 @@ public class Element extends Token {
                 g,
                 position.x + xOff,
                 position.y + yOff,
-                scaleX,
-                scaleY
+                scaleX*size.w,
+                scaleY*size.h
         ).setTransparency(styles.get("transparency").asNumber());
         elementRender(mg);
         if(Debug.RENDER_ELEMENT_BOUNDS) {
@@ -127,7 +128,7 @@ public class Element extends Token {
     public void elementRender(ModifiedGraphics g) {}
 
     public Bounds getBounds() {
-        return null;
+        return new Bounds(position,size);
     }
     public void calculateBounds(ModifiedGraphics mg) {} // mg - position will always be 0,0
 

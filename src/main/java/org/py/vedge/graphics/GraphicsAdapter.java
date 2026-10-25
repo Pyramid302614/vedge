@@ -1,5 +1,7 @@
 package org.py.vedge.graphics;
 
+import org.py.vedge.ii.Polygon;
+
 public abstract class GraphicsAdapter {
 
     public Color fill = Color.ORANGE;
@@ -60,6 +62,7 @@ public abstract class GraphicsAdapter {
     public abstract void ellipse(double x, double y, double w, double h);
 
     public abstract void polygon(double[] allX, double[] allY);
+    public abstract void polygon(Polygon polygon);
 
 //    public abstract void image(Image image, double x, double y, double w, double h);
 

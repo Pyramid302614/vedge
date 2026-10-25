@@ -15,7 +15,7 @@ package org.py.vedge.util;
 //          The very very special array
 //          Generation 2, est. 2024
 //
-//          (Pronounced SPAR-ree, any other pronounciation is punishable by death)
+//          (Pronounced SPAR-ree, any other pronunciation is punishable by death)
 
 
 import java.util.Iterator;
@@ -133,7 +133,7 @@ public class Sparry<T> implements Iterable<T> {
     }
 
     public Sparry<T> map(Function<T,T> function) {
-        for(int i = 0; i < length; i++) function.apply(v[i]);
+        for(int i = 0; i < length; i++) v[i] = function.apply(v[i]);
         return this;
     }
 

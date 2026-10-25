@@ -58,7 +58,8 @@ public class Vedge {
         Frame.frameProcesses(
                 new Process(Stage::tickStage,"Tick Stage","tick_stage"),
                 new Process(Stage::collideStage,"Stage Collision","collide_stage"),
-                new Process(Stage::renderStage,"Tick Stage","tick_stage")
+                new Process(Stage::renderStage,"Render Stage","render_stage"),
+                new Process(Stage::postTickStage,"Post Tick Stage","post_tick_stage")
         );
 
         if(config.get("new_instance").asBoolean()) {

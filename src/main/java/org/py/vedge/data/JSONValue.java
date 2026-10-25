@@ -2,6 +2,8 @@ package org.py.vedge.data;
 
 import org.py.vedge.util.Sparry;
 
+import java.util.function.Supplier;
+
 public class JSONValue {
 
     public enum Type { JSONObject, String, NonString, Array }
@@ -22,6 +24,9 @@ public class JSONValue {
     }
     public double asDouble() {
         return Double.parseDouble(stringValue);
+    }
+    public float asFloat() {
+        return Float.parseFloat(stringValue);
     }
     public boolean asBoolean() {
         return Boolean.parseBoolean(stringValue);
@@ -84,6 +89,23 @@ public class JSONValue {
             jsonObjectValue = value.asJSONObject();
         if(type == Type.String)
             stringValue = value.asString();
+        if(type == Type.Array)
+            stringValue = value.asString();
+        if(type == Type.NonString)
+            stringValue = value.asString();
+    }
+
+    public JSONValue copy() {
+        return switch(type) {
+            case Array -> new JSONValue(arrayValue);
+            case String -> new JSONValue(stringValue);
+            case NonString -> {
+                JSONValue v = new JSONValue(stringValue);
+                v.type = Type.NonString;
+                yield v;
+            }
+            case JSONObject -> new JSONValue(jsonObjectValue.copy());
+        };
     }
 
     @Override

@@ -13,7 +13,9 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import org.py.vedge.graphics.Color;
 import org.py.vedge.graphics.GraphicsAdapter;
 import org.py.vedge.ii.Dimension;
+import org.py.vedge.ii.Polygon;
 import org.py.vedge.infa.external.Pedro;
+import org.py.vedge.infa.java.ErrorHandler;
 
 public class Graphics extends GraphicsAdapter {
 
@@ -23,7 +25,7 @@ public class Graphics extends GraphicsAdapter {
 
     private SpriteBatch spriteBatch;
     private ShapeRenderer shapeRenderer;
-    private OrthographicCamera camera;
+    public OrthographicCamera camera;
     private FitViewport viewport;
 
     private final Font font = Font.ARIAL();
@@ -36,6 +38,8 @@ public class Graphics extends GraphicsAdapter {
         spriteBatch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
         camera = new OrthographicCamera();
+        camera.position.set(WIDTH/2f,HEIGHT/2f,0f);
+        camera.update();
         viewport = new FitViewport(WIDTH,HEIGHT,camera);
     }
     public void dispose() {
@@ -65,15 +69,58 @@ public class Graphics extends GraphicsAdapter {
 
     @Override
     public void polygon(double[] allX, double[] allY) {
+        if(allX.length != allY.length) {
+            ErrorHandler.silent("Invalid polygon render: allX.length doesn't match allY.length");
+            return;
+        }
+        if(allX.length == 0) return;
         float[] vertices = new float[allX.length*2];
-        for(int i = 0; i < allX.length*2-1; i++) {
-            vertices[i] = (float)allX[i];
-            vertices[i+1] = (float)allY[i];
+        for(int i = 0; i < allX.length; i++) {
+            vertices[i*2] = (float)allX[i];
+            vertices[i*2+1] = HEIGHT-(float)allY[i];
         }
         ShapeRender(() -> shapeRenderer.polygon(vertices),
             () -> {
                 shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-                shapeRenderer.polyline(vertices);
+                for(int i = 0; i < allX.length; i++) {
+                    shapeRenderer.rectLine(
+                        vertices[i*2],
+                        vertices[i*2+1],
+                        vertices[(i*2+2)%vertices.length],
+                        vertices[(i*2+3)%vertices.length],
+                        (float)strokeWeight
+                    );
+                }
+//                shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+//                shapeRenderer.polyline(vertices);
+            });
+    }
+    @Override
+    public void polygon(Polygon polygon) {
+        if(polygon.isElliptic) {
+            ellipse(polygon.isElliptic__x,polygon.isElliptic__y,polygon.isElliptic__w,polygon.isElliptic__h);
+            return;
+        }
+        if(polygon.length == 0) return;
+        float[] vertices = new float[polygon.length*2];
+        for(int i = 0; i < polygon.length; i++) {
+            vertices[i*2] = (float)polygon.get(i).x();
+            vertices[i*2+1] = HEIGHT-(float)polygon.get(i).y();
+        }
+        ShapeRender(() -> shapeRenderer.polygon(vertices),
+            () -> {
+                shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+                for(int i = 0; i < polygon.length; i++) {
+                    shapeRenderer.rectLine(
+                        vertices[i*2],
+                        vertices[i*2+1],
+                        vertices[(i*2+2)%vertices.length],
+                        vertices[(i*2+3)%vertices.length],
+                        (float)strokeWeight
+                    );
+                }
+//                shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+//                shapeRenderer.polyline(vertices);
             });
     }
 

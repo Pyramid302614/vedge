@@ -7,7 +7,7 @@ import java.util.function.BiConsumer;
 
 public class JSONObject {
 
-    private HashMap<String,JSONValue> items = new HashMap<>();
+    private final HashMap<String,JSONValue> items = new HashMap<>();
 
     public int length() {
         return items.size();
@@ -55,11 +55,15 @@ public class JSONObject {
     }
 
 
+    public boolean containsKey(String key) {
+        return items.containsKey(key);
+    }
+
     public JSONValue get(int index) {
         return values()[index];
     }
     public JSONValue get(String key) {
-        return items.get(key);
+        return items.getOrDefault(key,null);
     }
     public JSONValue getValue(String address) {
         try {
@@ -127,12 +131,9 @@ public class JSONObject {
 
     public JSONObject copy() {
         JSONObject clone = new JSONObject();
-        for(String key : clone.keys()) {
+        for(String key : keys()) {
             JSONValue value = get(key);
-            if(value.type == JSONValue.Type.JSONObject)
-                clone.set(key,value.asJSONObject().copy());
-            else
-                clone.set(key,value);
+            clone.set(key,value.copy());
         }
         return clone;
     }

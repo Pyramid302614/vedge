@@ -2,6 +2,7 @@ package org.py.vedge.graphics.external;
 
 import org.py.vedge.graphics.Color;
 import org.py.vedge.graphics.GraphicsAdapter;
+import org.py.vedge.ii.Polygon;
 
 public class ModifiedGraphics extends GraphicsAdapter {
 
@@ -106,6 +107,16 @@ public class ModifiedGraphics extends GraphicsAdapter {
         for(int i = 0; i < translatedX.length; i++) {
             translatedX[i] = tx(allX[i]);
             translatedY[i] = tx(allY[i]);
+        }
+        g.polygon(translatedX,translatedY);
+    }
+    @Override
+    public void polygon(Polygon polygon) {
+        double[] translatedX = new double[polygon.length];
+        double[] translatedY = new double[polygon.length];
+        for(int i = 0; i < translatedX.length; i++) {
+            translatedX[i] = tx(polygon.get(i).x());
+            translatedY[i] = tx(polygon.get(i).y());
         }
         g.polygon(translatedX,translatedY);
     }

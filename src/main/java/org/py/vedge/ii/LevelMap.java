@@ -6,6 +6,7 @@ import org.py.vedge.data.JSON;
 import org.py.vedge.data.JSONObject;
 import org.py.vedge.graphics.external.Graphics;
 import org.py.vedge.graphics.external.ModifiedGraphics;
+import org.py.vedge.infa.Debug;
 import org.py.vedge.infa.java.Resources;
 import org.py.vedge.util.Sparry;
 
@@ -33,8 +34,11 @@ public class LevelMap extends Map<LevelTile> {
     }
 
 
+
     public Sparry<Token> asTokens() {
-        return new Sparry<>();
+        Sparry<Token> tokens = new Sparry<>();
+        flatten().forEach(tokens::add);
+        return tokens;
     }
 
 
@@ -44,13 +48,19 @@ public class LevelMap extends Map<LevelTile> {
     public void render(Graphics g) {
 
         forEach((tile,point) -> {
-            if(tile != null) tile.tileRender(new ModifiedGraphics(
-                    g,
-                    point.x * tileSize,
-                    point.y * tileSize,
-                    tileSize,
-                    tileSize
-            ));
+            if(tile != null) {
+                tile.tileRender(new ModifiedGraphics(
+                        g,
+                        point.x * tileSize,
+                        point.y * tileSize,
+                        tileSize,
+                        tileSize
+                ));
+                if(Debug.RENDER_LEVELTILE_HITBOXES && tile.collidable && (tile.hitbox.length > 0 || tile.hitbox.isElliptic)) {
+                    g.strokeNoFill(Debug.RENDER_LEVELTILE_HITBOXES_Color);
+                    g.polygon(tile.hitbox.offset(point.x,point.y).scale(tileSize));
+                }
+            }
         });
 
     }

@@ -1,5 +1,8 @@
 package org.py.vedge.ii;
 
+import org.py.vedge.graphics.external.Graphics;
+import org.py.vedge.graphics.external.ModifiedGraphics;
+
 public class Entity extends Token {
 
     public enum State {
@@ -14,6 +17,18 @@ public class Entity extends Token {
             case Stained, Loaded -> true;
             default -> false;
         };
+    }
+
+    public void entityRender(ModifiedGraphics mg) {}
+    @Override
+    public void tokenRender(Graphics g) {
+        entityRender(new ModifiedGraphics(
+            g,
+            position.x,
+            position.y,
+            size.w,
+            size.h
+        ));
     }
 
     public void entityTick() {}

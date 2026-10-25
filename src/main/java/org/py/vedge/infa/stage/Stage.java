@@ -1,5 +1,6 @@
 package org.py.vedge.infa.stage;
 
+import org.py.vedge.data.JSONObject;
 import org.py.vedge.graphics.external.Graphics;
 import org.py.vedge.graphics.external.ModifiedGraphics;
 import org.py.vedge.ii.Entity;
@@ -13,8 +14,11 @@ import org.py.vedge.infa.Timers;
 import org.py.vedge.infa.external.Window;
 import org.py.vedge.infa.java.Error;
 import org.py.vedge.infa.java.Time;
+import org.py.vedge.physics.external.Physics;
+import org.py.vedge.physics.external.PhysicsObject;
 import org.py.vedge.util.Sparry;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class Stage {
@@ -122,6 +126,12 @@ public class Stage {
         if(graceStage != null) stages.get(graceStage).render(Window.vg.graphics);
         if(transitionTimestamp != -1) transition.draw(new ModifiedGraphics(Window.vg.graphics, Window.vg.position.x, Window.vg.position.y, Window.vg.size.w, Window.vg.size.h), (double)(Time.nowMs() - transitionTimestamp)/transition.length);
     }
+    public static void postTickStage() {
+        if(active() == null) return;
+        active().postTick();
+        if(graceStage != null) stages.get(graceStage).postTick();
+
+    }
 
     private int grace = 0;
     public Stage grace(int graceMS) {
@@ -156,6 +166,7 @@ public class Stage {
     private final Sparry<Entity> entities = new Sparry<>();
     private Player player;
     private LevelMap levelMap;
+    private Physics physics;
 
 
     private void tickEntities() {
@@ -191,6 +202,21 @@ public class Stage {
                 g.polygon(X,Y);
             });
         }
+        if(Debug.RENDER_ENTITY_PHYSICS_HITBOXES) {
+            g.strokeNoFill(Debug.RENDER_ENTITY_PHYSICS_HITBOXES_Color);
+            g.strokeWeight(5);
+            entities.forEach(e -> {
+                if(e.physicsHitbox != null) {
+                    double[] X = new double[e.physicsHitbox.length];
+                    double[] Y = new double[e.physicsHitbox.length];
+                    for(int i = 0; i < e.physicsHitbox.length; i++) {
+                        X[i] = e.TCX(e.physicsHitbox.get(i).x());
+                        Y[i] = e.TCY(e.physicsHitbox.get(i).y());
+                    }
+                    g.polygon(X,Y);
+                }
+            });
+        }
 
     }
 
@@ -217,25 +243,51 @@ public class Stage {
         elements.render(g);
     }
 
+    private void tickPhysics() {
+        physics.tick();
+    }
+    private void renderPhysics(Graphics g) {
+        physics.render(g);
+    }
+    private void postTickPhysics() {
+        physics.postTick();
+    }
+
 
     public void addEntities(Entity... entities) {
         this.entities.addAll(entities);
-        tokens.addSecondaries(entities);
+        tokens.add(entities);
     }
     public void setPlayer(Player player) {
         this.player = player;
-        tokens.addPrimaries(player);
+        tokens.add(player);
     }
     public void setLevelMap(LevelMap levelMap) {
         this.levelMap = levelMap;
-        tokens.addSecondaries(levelMap.asTokens());
+        tokens.add(levelMap.asTokens());
+    }
+    public void enablePhysics(JSONObject physicsConfig) {
+        physics = new Physics(physicsConfig);
+
+
+        entities.forEach(token -> {
+            if(token.collidable) physics.objects.add(new PhysicsObject(token));
+        });
+        levelMap.forEach((token,point) -> {
+            if(token.collidable) physics.objects.add(new PhysicsObject(token.raster(levelMap,point),new JSONObject().s("type","static")));
+        });
+        physics.init();
+    }
+    public void disablePhysics() {
+        physics.dispose();
+        physics = null;
     }
     public void applyTransition(StageTransition transition) {
         appliedTransition = transition;
     }
-
     public void addElements(Element... elements) {
         this.elements.add(elements);
+        this.tokens.add(elements);
     }
 
 
@@ -246,6 +298,8 @@ public class Stage {
         if(entities.length > 0) tickEntities();
         if(player != null) tickPlayer();
         if(elements.length() > 0) tickElements();
+        if(physics != null) tickPhysics();
+
     }
     private void collide() {
 
@@ -255,6 +309,10 @@ public class Stage {
         if(entities.length > 0) renderEntities(g);
         if(player != null) renderPlayer(g);
         if(elements.length() > 0) renderElements(g);
+        if(physics != null) renderPhysics(g);
+    }
+    private void postTick() {
+        if(physics != null) postTickPhysics();
     }
 
     // EXIT EXCLUDES LINGER AND GRACE
@@ -295,3 +353,21 @@ public class Stage {
 
 
 }
+
+
+                                       //////////////
+                                    ////  ////////////
+                                   //////////////////
+                                  //////////////////
+                                 ////////
+                                ////////////////
+               //            ////////
+              ////        //////////
+             //////    ////////////////
+            //////////////////////  //
+             ////////////////////
+              ////////////////
+               ////////////
+                ////  ////
+               //      //
+              ////    ////
