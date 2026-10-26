@@ -13,9 +13,9 @@ public abstract class PhysicsObjectAdapter {
     private static final JSONObject config_default = new JSONObject();
     static {
         config_default.set("type","dynamic"); // "dynamic", "static", "kinematic" > https://libgdx.com/wiki/extensions/physics/box2d
-        config_default.set("density",0.2);
-        config_default.set("friction",0.2);
-        config_default.set("restitution",0);
+        config_default.set("density",0.001);
+        config_default.set("friction",0.15);
+        config_default.set("restitution",0.05);
     }
     public static JSONObject config_default() {
         return config_default.copy();

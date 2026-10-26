@@ -23,13 +23,13 @@ public class Physics extends PhysicsAdapter {
     private World world;
     private Box2DDebugRenderer debugRenderer;
 
-    private double stepSpeed = 4;
+    private double stepSpeed = 5;
 
     static {
         // Only ever apply scale onto VG stuff after it's been converted from GDX
         // THESE TWO NUMBERS SHOULD ALWAYS BE THE SAME
 //        scale = new DoublePoint(0.000265,0.000265); // (SCALE OF B2D) Used to accurately represent meters, so Box2D doesn't treat objects as huge masses
-        scale = new DoublePoint(0.02,0.02);
+        scale = new DoublePoint(0.04,0.04);
         // Uses 3,779.53 meters -> 1 pixel
     }
 
