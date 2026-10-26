@@ -17,7 +17,7 @@ public class Player extends Token {
     }
     @Override
     public final void tokenRender(Graphics g) {
-        playerRender(new ModifiedGraphics(g,position.x,position.y,size.w,size.h));
+        playerRender(new ModifiedGraphics(g,position.x,position.y,size.w,size.h,rotation));
     }
 
     public void playerTick() {

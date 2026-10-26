@@ -94,6 +94,9 @@ public class Pedro {
     public static com.badlogic.gdx.math.Vector2 tdGdx(DoublePoint direction) { // Force directions
         return tdGdx(direction.x(),direction.y());
     }
+    public static float tangGdx(double ang) { // Degs or rads
+        return (float)-ang;
+    }
 
     public static float txVg(double x) {
         return (float) x;
@@ -121,6 +124,9 @@ public class Pedro {
     }
     public static DoublePoint tdVg(com.badlogic.gdx.math.Vector2 direction) { // Force directions
         return tdVg(direction.x,direction.y);
+    }
+    public static double tangVg(float ang) { // Degs or rads
+        return -ang;
     }
 
 }

@@ -59,6 +59,7 @@ public abstract class GraphicsAdapter {
     }
 
     public abstract void rect(double x, double y, double w, double h);
+    public abstract void rect(double x, double y, double w, double h, double angle);
     public abstract void ellipse(double x, double y, double w, double h);
 
     public abstract void polygon(double[] allX, double[] allY);

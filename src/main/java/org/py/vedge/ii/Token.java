@@ -12,6 +12,7 @@ public class Token {
 
     public Position position = new Position(0,0);
     public Position previousPosition = new Position(0,0);
+    public double rotation = 0;
     private final Sparry<Consumer<Position>> onPositionUpdates = new Sparry<>();
     public void onPositionUpdate(Consumer<Position> consumer) {
         onPositionUpdates.add(consumer);

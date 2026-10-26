@@ -124,7 +124,7 @@ public class Stage {
         if(active() == null) return;
         active().render(Window.vg.graphics);
         if(graceStage != null) stages.get(graceStage).render(Window.vg.graphics);
-        if(transitionTimestamp != -1) transition.draw(new ModifiedGraphics(Window.vg.graphics, Window.vg.position.x, Window.vg.position.y, Window.vg.size.w, Window.vg.size.h), (double)(Time.nowMs() - transitionTimestamp)/transition.length);
+        if(transitionTimestamp != -1) transition.draw(new ModifiedGraphics(Window.vg.graphics, Window.vg.position.x, Window.vg.position.y, Window.vg.size.w, Window.vg.size.h,0), (double)(Time.nowMs() - transitionTimestamp)/transition.length);
     }
     public static void postTickStage() {
         if(active() == null) return;

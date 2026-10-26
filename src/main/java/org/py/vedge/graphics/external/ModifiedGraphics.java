@@ -2,6 +2,7 @@ package org.py.vedge.graphics.external;
 
 import org.py.vedge.graphics.Color;
 import org.py.vedge.graphics.GraphicsAdapter;
+import org.py.vedge.ii.Meth;
 import org.py.vedge.ii.Polygon;
 
 public class ModifiedGraphics extends GraphicsAdapter {
@@ -13,17 +14,19 @@ public class ModifiedGraphics extends GraphicsAdapter {
     private double xScale = 0;
     private double yScale = 0;
     private double transparency = 100;
+    private double rotation = 0; // Around 0,0 , in degrees
 
     public ModifiedGraphics(Graphics graphics) {
         g = graphics;
     }
 
-    public ModifiedGraphics(Graphics graphics, double xOffset, double yOffset, double xScale, double yScale) {
+    public ModifiedGraphics(Graphics graphics, double xOffset, double yOffset, double xScale, double yScale, double rotation) {
         g = graphics;
         this.xOffset = xOffset;
         this.yOffset = yOffset;
         this.xScale = xScale;
         this.yScale = yScale;
+        this.rotation = rotation;
     }
 
     public ModifiedGraphics setOffset(double x, double y) {
@@ -46,11 +49,13 @@ public class ModifiedGraphics extends GraphicsAdapter {
         return this;
     }
 
-    private double tx(double x) {
-        return Math.round(x*xScale+xOffset);
+    private double tx(double x,double y) {
+        if(rotation == 0 || (x == y && x == 0)) return Math.round(x*xScale+xOffset);
+        return Math.round(Meth.rotate(x,y,rotation).x()*xScale+xOffset);
     } // Translate X
-    private double ty(double y) {
-        return Math.round(y*yScale+yOffset);
+    private double ty(double x, double y) {
+        if(rotation == 0 || (x == y && x == 0)) return Math.round(y*yScale+yOffset);
+        return Math.round(Meth.rotate(x,y,rotation).y()*yScale+yOffset);
     } // Translate Y
     private double tw(double w) {
         return Math.round(w*xScale);
@@ -61,20 +66,21 @@ public class ModifiedGraphics extends GraphicsAdapter {
     private double td(double d) {
         return Math.round(d*((xScale+yScale)/2));
     } // Translate Dimension
-    private double rx(double x) {
-        return Math.round((x-xOffset)/xScale);
+    private double tang(double a) {
+        return a+rotation;
     }
-    private double ry(double y) {
-        return Math.round((y-yOffset)/yScale);
-    }
+
     private double rw(double w) {
         return Math.round(w/xScale);
-    }
+    } // Reverse Translate Width
     private double rh(double h) {
         return Math.round(h/yScale);
-    }
+    } // Reverse Translate Height
     private double rd(double d) {
         return Math.round(d/((xScale+yScale)/2));
+    } // Reverse Translate Dimension
+    private double rang(double a) {
+        return a-rotation;
     }
 
     @Override
@@ -88,25 +94,31 @@ public class ModifiedGraphics extends GraphicsAdapter {
 
     @Override
     public void rect(double x, double y, double w, double h) {
-        g.rect(tx(x),ty(y),tw(w),th(h));
+        rect(x,y,w,h,0);
     }
-    public void rect(double x, double y, double w, double h, double ntx, double nty, double ntw, double nth) {
-        g.rect(tx(x)+ntx,ty(y)+nty,tw(w)+ntw,th(h)+nth);
+
+    @Override
+    public void rect(double x, double y, double w, double h, double angle) {
+        g.rect(tx(x,y),ty(x,y),tw(w),th(h),tang(angle));
+    }
+
+    public void rect(double x, double y, double w, double h, double ntx, double nty, double ntw, double nth, double angle) {
+        g.rect(tx(x,y)+ntx,ty(x,y)+nty,tw(w)+ntw,th(h)+nth,angle);
     }
     @Override
     public void ellipse(double x, double y, double w, double h) {
-        g.ellipse(tx(x),ty(y),tw(w),th(h));
+        g.ellipse(tx(x,y),ty(x,y),tw(w),th(h));
     }
     public void ellipse(double x, double y, double w, double h, double ntx, double nty, double ntw, double nth) {
-        g.ellipse(tx(x)+ntx,ty(y)+nty,tw(w)+ntw,th(h)+nth);
+        g.ellipse(tx(x,y)+ntx,ty(x,y)+nty,tw(w)+ntw,th(h)+nth);
     }
     @Override
     public void polygon(double[] allX, double[] allY) {
         double[] translatedX = new double[allX.length];
         double[] translatedY = new double[allY.length];
         for(int i = 0; i < translatedX.length; i++) {
-            translatedX[i] = tx(allX[i]);
-            translatedY[i] = tx(allY[i]);
+            translatedX[i] = tx(allX[i],allY[i]);
+            translatedY[i] = tx(allX[i],allY[i]);
         }
         g.polygon(translatedX,translatedY);
     }
@@ -115,18 +127,18 @@ public class ModifiedGraphics extends GraphicsAdapter {
         double[] translatedX = new double[polygon.length];
         double[] translatedY = new double[polygon.length];
         for(int i = 0; i < translatedX.length; i++) {
-            translatedX[i] = tx(polygon.get(i).x());
-            translatedY[i] = tx(polygon.get(i).y());
+            translatedX[i] = tx(polygon.get(i).x(),polygon.get(i).y());
+            translatedY[i] = tx(polygon.get(i).x(),polygon.get(i).y());
         }
         g.polygon(translatedX,translatedY);
     }
 
     @Override
     public void text(String text, double x, double y) {
-        g.text(text,tx(x),ty(y));
+        g.text(text,tx(x,y),ty(x,y));
     }
     public void text(String text, double x, double y, double ntx, double nty) {
-        g.text(text,tx(x)+ntx,ty(y)+nty);
+        g.text(text,tx(x,y)+ntx,ty(x,y)+nty);
     }
 
     @Override

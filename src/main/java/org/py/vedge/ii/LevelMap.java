@@ -54,7 +54,8 @@ public class LevelMap extends Map<LevelTile> {
                         point.x * tileSize,
                         point.y * tileSize,
                         tileSize,
-                        tileSize
+                        tileSize,
+                    0
                 ));
                 if(Debug.RENDER_LEVELTILE_HITBOXES && tile.collidable && (tile.hitbox.length > 0 || tile.hitbox.isElliptic)) {
                     g.strokeNoFill(Debug.RENDER_LEVELTILE_HITBOXES_Color);

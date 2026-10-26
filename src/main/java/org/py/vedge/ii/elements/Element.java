@@ -77,7 +77,7 @@ public class Element extends Token {
         double xOff = 0;
         double yOff = 0;
         Property.P_Alignment alignment = styles.get("alignment").asAlignment();
-        calculateBounds(new ModifiedGraphics(g,0,0,scaleX,scaleY));
+        calculateBounds(new ModifiedGraphics(g,0,0,scaleX,scaleY,0));
         Bounds bounds = getBounds();
         if(bounds != null && alignment != Property.P_Alignment.None) {
             Bounds parentBounds = ((parent == null || parent.getBounds() == null) ? Window.vg.getBounds() : parent.getBounds());
@@ -115,7 +115,8 @@ public class Element extends Token {
                 position.x + xOff,
                 position.y + yOff,
                 scaleX*size.w,
-                scaleY*size.h
+                scaleY*size.h,
+                0
         ).setTransparency(styles.get("transparency").asNumber());
         elementRender(mg);
         if(Debug.RENDER_ELEMENT_BOUNDS) {

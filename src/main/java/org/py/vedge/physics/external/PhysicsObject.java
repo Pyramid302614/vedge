@@ -81,9 +81,11 @@ public class PhysicsObject extends PhysicsObjectAdapter {
     @Override
     public void sync() {
 
-        Vector2 gdxPosition = body.getPosition(); // Around center (fml)
-        if(body != null) token.position.set(Pedro.txyVg(Pedro.gdx_vg(gdxPosition).toPosition(),token.size.scale(scale)).toPosition().rScale(scale));
-//        System.out.println(Pedro.txyVg(Pedro.gdx_vg(gdxPosition).toPosition(),token.size).toPosition().scale(new DoublePoint(1/scale.x(),1/scale.y())));
+        Vector2 gdxPosition = body.getPosition(); // Around center (fml) EDIT: it's actually not
+        if(body != null) {
+            token.position.set(Pedro.txyVg(Pedro.gdx_vg(gdxPosition).toPosition(),token.size.scale(scale)).toPosition().rScale(scale));
+            token.rotation = Math.toDegrees(body.getAngle());
+        }
     }
 
     // Not token position

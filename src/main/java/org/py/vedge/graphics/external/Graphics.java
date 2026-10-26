@@ -13,6 +13,8 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import org.py.vedge.graphics.Color;
 import org.py.vedge.graphics.GraphicsAdapter;
 import org.py.vedge.ii.Dimension;
+import org.py.vedge.ii.DoublePoint;
+import org.py.vedge.ii.Meth;
 import org.py.vedge.ii.Polygon;
 import org.py.vedge.infa.external.Pedro;
 import org.py.vedge.infa.java.ErrorHandler;
@@ -54,11 +56,32 @@ public class Graphics extends GraphicsAdapter {
     public void rect(double x, double y, double w, double h) {
         ShapeRender(() -> shapeRenderer.rect((float)x,(float)(HEIGHT-y-h),(float)w,(float)h),
             () -> {
+                // tl, tr, br, bl
                 shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
                 shapeRenderer.rectLine((float)(x-strokeWeight/2),(float)(HEIGHT-y-h),(float)(x+w+strokeWeight/2),(float)(HEIGHT-y-h),(float)strokeWeight);
                 shapeRenderer.rectLine((float)(x+w),(float)(HEIGHT-y-h),(float)(x+w),(float)(HEIGHT-y),(float)strokeWeight);
                 shapeRenderer.rectLine((float)(x+w+strokeWeight/2),(float)(HEIGHT-y),(float)(x-strokeWeight/2),(float)(HEIGHT-y),(float)strokeWeight);
                 shapeRenderer.rectLine((float)x,(float)(HEIGHT-y),(float)x,(float)(HEIGHT-y-h),(float)strokeWeight);
+            });
+    }
+    @Override
+    public void rect(double x, double y, double w, double h, double angle) {
+        if(angle == 0) {
+            rect(x,y,w,h);
+            return;
+        }
+        ShapeRender(() -> shapeRenderer.rect((float)x,(float)(HEIGHT-y-h),0,0,(float)w,(float)h,1,1,(float)angle),
+            () -> {
+                // tl, tr, br, bl
+                DoublePoint tl = new DoublePoint(x,y); // Origin
+                DoublePoint tr = Meth.rotate(x+w,y,angle,tl);
+                DoublePoint br = Meth.rotate(x+w,y+h,angle,tl);
+                DoublePoint bl = Meth.rotate(x,y+h,angle,tl);
+                shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+                shapeRenderer.rectLine((float)(tl.x()-strokeWeight/2),(float)(HEIGHT-tl.y()-h),(float)(tr.x()+strokeWeight/2),(float)(HEIGHT-tr.y()-h),(float)strokeWeight);
+                shapeRenderer.rectLine((float)tr.x(),(float)(HEIGHT-tr.y()-h),(float)br.x(),(float)(HEIGHT-br.y()-h),(float)strokeWeight);
+                shapeRenderer.rectLine((float)(br.x()+strokeWeight/2),(float)(HEIGHT-br.y()-h),(float)(bl.x()-strokeWeight/2),(float)(HEIGHT-bl.y()-h),(float)strokeWeight);
+                shapeRenderer.rectLine((float)bl.x(),(float)(HEIGHT-bl.y()-h),(float)tl.x(),(float)(HEIGHT-tl.y()-h),(float)strokeWeight);
             });
     }
 

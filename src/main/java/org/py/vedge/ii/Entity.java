@@ -27,7 +27,8 @@ public class Entity extends Token {
             position.x,
             position.y,
             size.w,
-            size.h
+            size.h,
+            rotation
         ));
     }
 
