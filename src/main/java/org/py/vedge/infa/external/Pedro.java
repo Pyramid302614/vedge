@@ -1,7 +1,9 @@
 package org.py.vedge.infa.external;
 
+import com.badlogic.gdx.math.EarClippingTriangulator;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.utils.ShortArray;
 import org.py.vedge.ii.Dimension;
 import org.py.vedge.ii.DoublePoint;
 import org.py.vedge.ii.Polygon;
@@ -40,19 +42,30 @@ public class Pedro {
         circleShape.setRadius((float)polygon.isElliptic__w/2);
         return circleShape;
     }
-    public static PolygonShape vg_gdx(Polygon ellipse, PolygonShape polygonShape, int vertexCount) { // Approximates ellipse shape
-        com.badlogic.gdx.math.Vector2[] vertices = new com.badlogic.gdx.math.Vector2[ellipse.length];
+    public static PolygonShape[] vg_gdx(Polygon ellipse, int vertexCount) { // Approximates ellipse shape
+        float[] vertices = new float[vertexCount*2];
         float rx = (float)ellipse.isElliptic__w/2f;
         float ry = (float)ellipse.isElliptic__h/2f;
         for(int i = 0; i < vertexCount; i++) {
             float angle = (i/((float)vertexCount))*360f;
-            vertices[i] = new com.badlogic.gdx.math.Vector2(
-                (float)(rx * Math.cos(angle)),
-                (float)(ry * Math.sin(angle))
-            );
+            vertices[i*2] = (float)(rx * Math.cos(angle));
+            vertices[i*2+1] = (float)(ry * Math.sin(angle));
         }
-        polygonShape.set(vertices);
-        return polygonShape;
+        EarClippingTriangulator triangulator = new EarClippingTriangulator();
+        ShortArray indices = triangulator.computeTriangles(vertices);
+        PolygonShape[] polys = new PolygonShape[indices.size/3];
+        for(int i = 0; i < indices.size; i += 3) {
+            float[] triangleVertices = new float[6];
+            for(int j = 0; j < 3; j++) {
+                int vertexIndex = indices.get(i + j);
+                triangleVertices[j*2] = vertices[vertexIndex*2];     // x
+                triangleVertices[j*2+1] = vertices[vertexIndex*2+1]; // y
+            }
+            PolygonShape triangleShape = new PolygonShape();
+            triangleShape.set(triangleVertices);
+            polys[i/3] = triangleShape;
+        }
+        return polys;
     }
     public static PolygonShape vg_gdx(Polygon polygon, PolygonShape polygonShape) { // Gives exact polygon replica
         if(polygon.length < 3 | polygon.length > 8) {

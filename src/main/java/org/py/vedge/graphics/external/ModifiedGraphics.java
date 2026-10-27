@@ -92,26 +92,25 @@ public class ModifiedGraphics extends GraphicsAdapter {
         g.stroke(new Color(color.red(),color.green(),color.blue(),(int)(color.alpha()*transparency/100)));
     }
 
-    @Override
-    public void rect(double x, double y, double w, double h) {
-        rect(x,y,w,h,0);
-    }
 
     @Override
     public void rect(double x, double y, double w, double h, double angle) {
         g.rect(tx(x,y),ty(x,y),tw(w),th(h),tang(angle));
     }
 
+    // Used in pigeon X but ended up in Vedge Graphics class because it was copied over initially
     public void rect(double x, double y, double w, double h, double ntx, double nty, double ntw, double nth, double angle) {
-        g.rect(tx(x,y)+ntx,ty(x,y)+nty,tw(w)+ntw,th(h)+nth,angle);
+        g.rect(tx(x,y)+ntx,ty(x,y)+nty,tw(w)+ntw,th(h)+nth,tang(angle));
     }
-    @Override
-    public void ellipse(double x, double y, double w, double h) {
-        g.ellipse(tx(x,y),ty(x,y),tw(w),th(h));
+
+    public void ellipse(double x, double y, double w, double h, double angle) {
+        g.ellipse(tx(x,y),ty(x,y),tw(w),th(h),tang(angle));
     }
-    public void ellipse(double x, double y, double w, double h, double ntx, double nty, double ntw, double nth) {
-        g.ellipse(tx(x,y)+ntx,ty(x,y)+nty,tw(w)+ntw,th(h)+nth);
+
+    public void ellipse(double x, double y, double w, double h, double ntx, double nty, double ntw, double nth, double angle) {
+        g.ellipse(tx(x,y)+ntx,ty(x,y)+nty,tw(w)+ntw,th(h)+nth,tang(angle));
     }
+
     @Override
     public void polygon(double[] allX, double[] allY) {
         double[] translatedX = new double[allX.length];

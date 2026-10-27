@@ -70,7 +70,7 @@ public class Graphics extends GraphicsAdapter {
             rect(x,y,w,h);
             return;
         }
-        ShapeRender(() -> shapeRenderer.rect((float)x,(float)(HEIGHT-y-h),0,0,(float)w,(float)h,1,1,(float)angle),
+        ShapeRender(() -> shapeRenderer.rect((float)x,(float)(HEIGHT-y-h),0,0,(float)w,(float)h,1,1,-(float)angle),
             () -> {
                 // tl, tr, br, bl
                 DoublePoint tl = new DoublePoint(x,y); // Origin
@@ -86,8 +86,8 @@ public class Graphics extends GraphicsAdapter {
     }
 
     @Override
-    public void ellipse(double x, double y, double w, double h) {
-        ShapeRender(() -> shapeRenderer.ellipse((float)x,(float)(HEIGHT-y-h),(float)w,(float)h));
+    public void ellipse(double x, double y, double w, double h, double angle) {
+        ShapeRender(() -> shapeRenderer.ellipse((float)x,(float)(HEIGHT-y-h),(float)w,(float)h,-(float)angle));
     }
 
     @Override

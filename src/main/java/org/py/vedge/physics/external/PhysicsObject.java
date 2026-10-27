@@ -35,6 +35,10 @@ public class PhysicsObject extends PhysicsObjectAdapter {
             ErrorHandler.silent("'world' is null upon calling PhysicsObject.init(), when it should have been defined beforehand in Physics::init");
             return;
         }
+        if(!token.physicsHitbox.isElliptic && token.physicsHitbox.length == 0) {
+            ErrorHandler.silent("No physics hitbox was specified for the token ("+token.hashCode()+") associated with this PhysicsObject.");
+            return;
+        }
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = switch(config("type").asString()) {
@@ -66,10 +70,11 @@ public class PhysicsObject extends PhysicsObjectAdapter {
             body.createFixture(fixtureDef);
             circle.dispose();
         } else if(token.physicsHitbox.isElliptic && token.physicsHitbox.isElliptic__w != token.physicsHitbox.isElliptic__h) {
-            PolygonShape ellipse = Pedro.vg_gdx(hitbox,new PolygonShape(),8);
-            fixtureDef.shape = ellipse;
-            body.createFixture(fixtureDef);
-            ellipse.dispose();
+            for(PolygonShape indicy : Pedro.vg_gdx(hitbox,12)) {
+                fixtureDef.shape = indicy;
+                body.createFixture(fixtureDef);
+                indicy.dispose();
+            }
         } else {
             PolygonShape polygon = Pedro.vg_gdx(hitbox,new PolygonShape());
             fixtureDef.shape = polygon;
@@ -87,6 +92,7 @@ public class PhysicsObject extends PhysicsObjectAdapter {
     @Override
     public void sync() {
 
+        if(body == null) return;
         Vector2 gdxPosition = body.getPosition(); // Around center (fml) EDIT: it's actually not
         if(body != null) {
             if(!token.physicsHitbox.isElliptic) {
@@ -94,7 +100,7 @@ public class PhysicsObject extends PhysicsObjectAdapter {
             } else {
                 token.position.set(Pedro.txyVg(Pedro.gdx_vg(gdxPosition).toPosition(),token.size.scale(scale)).toPosition().rScale(scale).offset(new DoublePoint(-token.physicsHitbox.isElliptic__w/2.0,token.physicsHitbox.isElliptic__h/2.0)));
             }
-            token.rotation = Math.toDegrees(body.getAngle());
+            token.rotation = Math.toDegrees(Pedro.tangGdx(body.getAngle()));
         }
     }
 

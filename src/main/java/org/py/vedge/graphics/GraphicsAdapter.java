@@ -58,9 +58,16 @@ public abstract class GraphicsAdapter {
         strokeNoFill(new Color(r,g,b,a));
     }
 
-    public abstract void rect(double x, double y, double w, double h);
+    public void rect(double x, double y, double w, double h) {
+        rect(x,y,w,h,0);
+    }
     public abstract void rect(double x, double y, double w, double h, double angle);
-    public abstract void ellipse(double x, double y, double w, double h);
+    public void ellipse(double x, double y, double w, double h) {
+        ellipse(x,y,w,h,0);
+    }
+    public void ellipse(double x, double y, double w, double h, double angle) {
+
+    }
 
     public abstract void polygon(double[] allX, double[] allY);
     public abstract void polygon(Polygon polygon);
