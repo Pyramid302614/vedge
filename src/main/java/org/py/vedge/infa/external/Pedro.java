@@ -37,7 +37,7 @@ public class Pedro {
     }
 
     public static CircleShape vg_gdx(Polygon polygon, CircleShape circleShape) { // Gives exact circle shape
-        circleShape.setRadius((float)polygon.isElliptic__w);
+        circleShape.setRadius((float)polygon.isElliptic__w/2);
         return circleShape;
     }
     public static PolygonShape vg_gdx(Polygon ellipse, PolygonShape polygonShape, int vertexCount) { // Approximates ellipse shape

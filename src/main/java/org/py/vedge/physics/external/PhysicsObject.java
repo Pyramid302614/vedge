@@ -44,8 +44,14 @@ public class PhysicsObject extends PhysicsObjectAdapter {
         };
 
         Polygon hitbox = token.physicsHitbox.scale(scale);
-        Vector2 gdxPosition = Pedro.vg_gdx(Pedro.txyGdx(token.position.scale(scale),token.size.scale(scale)));
-        bodyDef.position.set(gdxPosition);
+        if(!token.physicsHitbox.isElliptic) {
+            Vector2 gdxPosition = Pedro.vg_gdx(Pedro.txyGdx(token.position.scale(scale),token.size.scale(scale)));
+            bodyDef.position.set(gdxPosition);
+        } else {
+            Vector2 gdxPosition = Pedro.vg_gdx(Pedro.txyGdx(token.position.rOffset(new DoublePoint(-token.physicsHitbox.isElliptic__w/2.0,token.physicsHitbox.isElliptic__h/2.0)).scale(scale),token.size.scale(scale)));
+            bodyDef.position.set(gdxPosition);
+        }
+        bodyDef.angle = (float)Math.toRadians(token.rotation);
 
         Body body = world.createBody(bodyDef);
 
@@ -83,7 +89,11 @@ public class PhysicsObject extends PhysicsObjectAdapter {
 
         Vector2 gdxPosition = body.getPosition(); // Around center (fml) EDIT: it's actually not
         if(body != null) {
-            token.position.set(Pedro.txyVg(Pedro.gdx_vg(gdxPosition).toPosition(),token.size.scale(scale)).toPosition().rScale(scale));
+            if(!token.physicsHitbox.isElliptic) {
+                token.position.set(Pedro.txyVg(Pedro.gdx_vg(gdxPosition).toPosition(),token.size.scale(scale)).toPosition().rScale(scale));
+            } else {
+                token.position.set(Pedro.txyVg(Pedro.gdx_vg(gdxPosition).toPosition(),token.size.scale(scale)).toPosition().rScale(scale).offset(new DoublePoint(-token.physicsHitbox.isElliptic__w/2.0,token.physicsHitbox.isElliptic__h/2.0)));
+            }
             token.rotation = Math.toDegrees(body.getAngle());
         }
     }

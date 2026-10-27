@@ -55,4 +55,7 @@ public final class DoublePoint {
     }
 
 
+    public static final DoublePoint ZERO = new DoublePoint(0,0);
+
+
 }

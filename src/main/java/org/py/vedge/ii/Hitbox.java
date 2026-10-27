@@ -24,7 +24,14 @@ public class Hitbox extends Polygon {
     }
     public void setShape(Polygon polygon) {
         if(length > 0) clear();
-        addAll(polygon);
+        if(polygon.isElliptic) {
+            isElliptic = true;
+            isElliptic__x = polygon.isElliptic__x;
+            isElliptic__y = polygon.isElliptic__y;
+            isElliptic__w = polygon.isElliptic__w;
+            isElliptic__h = polygon.isElliptic__h;
+        }
+        else addAll(polygon);
     }
 
 }
