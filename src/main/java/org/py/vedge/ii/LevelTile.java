@@ -23,16 +23,18 @@ public class LevelTile extends Token {
     public LevelTile raster(LevelMap map, Point location) { // Location: point on level map where this tile is found
         LevelTile tile = new LevelTile(
             key,
-            hitbox.scale(map.tileSize),
+            hitbox,
             render
         );
-        tile.physicsHitbox(physicsHitbox.scale(map.tileSize));
+        tile.collidable = collidable;
+        tile.hitbox(hitbox/*.scale(map.tileSize)*/);
+        tile.physicsHitbox(physicsHitbox/*.scale(map.tileSize)*/);
         tile.position.set(location.x * map.tileSize, location.y * map.tileSize);
         tile.size.set(map.tileSize,map.tileSize);
         return tile;
     }
 
-    public void tileRender(ModifiedGraphics mg) {
+    public final void tileRender(ModifiedGraphics mg) {
         render.accept(mg);
     }
 

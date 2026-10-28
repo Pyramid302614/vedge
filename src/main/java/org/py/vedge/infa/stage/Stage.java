@@ -269,7 +269,6 @@ public class Stage {
     public void enablePhysics(JSONObject physicsConfig) {
         physics = new Physics(physicsConfig);
 
-
         entities.forEach(token -> {
             if(token.collidable) physics.objects.add(new PhysicsObject(token));
         });

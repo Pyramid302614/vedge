@@ -40,6 +40,8 @@ public class PhysicsObject extends PhysicsObjectAdapter {
             return;
         }
 
+        final Polygon physicsHitbox = token.physicsHitbox.scale(token.size.w,token.size.h);
+
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = switch(config("type").asString()) {
             case "static" -> BodyDef.BodyType.StaticBody;
@@ -47,12 +49,12 @@ public class PhysicsObject extends PhysicsObjectAdapter {
             default -> BodyDef.BodyType.DynamicBody;
         };
 
-        Polygon hitbox = token.physicsHitbox.scale(scale);
-        if(!token.physicsHitbox.isElliptic) {
+        Polygon hitbox = physicsHitbox.scale(scale);
+        if(!physicsHitbox.isElliptic) {
             Vector2 gdxPosition = Pedro.vg_gdx(Pedro.txyGdx(token.position.scale(scale),token.size.scale(scale)));
             bodyDef.position.set(gdxPosition);
         } else {
-            Vector2 gdxPosition = Pedro.vg_gdx(Pedro.txyGdx(token.position.rOffset(new DoublePoint(-token.physicsHitbox.isElliptic__w/2.0,token.physicsHitbox.isElliptic__h/2.0)).scale(scale),token.size.scale(scale)));
+            Vector2 gdxPosition = Pedro.vg_gdx(Pedro.txyGdx(token.position.rOffset(new DoublePoint(-physicsHitbox.isElliptic__w/2.0,token.physicsHitbox.isElliptic__h/2.0)).scale(scale),token.size.scale(scale)));
             bodyDef.position.set(gdxPosition);
         }
         bodyDef.angle = (float)Math.toRadians(token.rotation);
@@ -64,12 +66,12 @@ public class PhysicsObject extends PhysicsObjectAdapter {
         fixtureDef.friction = config("friction").asFloat();
         fixtureDef.restitution = config("restitution").asFloat();
 
-        if(token.physicsHitbox.isElliptic && token.physicsHitbox.isElliptic__w == token.physicsHitbox.isElliptic__h) {
+        if(physicsHitbox.isElliptic && physicsHitbox.isElliptic__w == physicsHitbox.isElliptic__h) {
             CircleShape circle = Pedro.vg_gdx(hitbox,new CircleShape());
             fixtureDef.shape = circle;
             body.createFixture(fixtureDef);
             circle.dispose();
-        } else if(token.physicsHitbox.isElliptic && token.physicsHitbox.isElliptic__w != token.physicsHitbox.isElliptic__h) {
+        } else if(physicsHitbox.isElliptic && physicsHitbox.isElliptic__w != physicsHitbox.isElliptic__h) {
             for(PolygonShape indicy : Pedro.vg_gdx(hitbox,12)) {
                 fixtureDef.shape = indicy;
                 body.createFixture(fixtureDef);
@@ -92,13 +94,15 @@ public class PhysicsObject extends PhysicsObjectAdapter {
     @Override
     public void sync() {
 
+        final Polygon physicsHitbox = token.physicsHitbox.scale(token.size.w,token.size.h);
+
         if(body == null) return;
         Vector2 gdxPosition = body.getPosition(); // Around center (fml) EDIT: it's actually not
         if(body != null) {
-            if(!token.physicsHitbox.isElliptic) {
+            if(!physicsHitbox.isElliptic) {
                 token.position.set(Pedro.txyVg(Pedro.gdx_vg(gdxPosition).toPosition(),token.size.scale(scale)).toPosition().rScale(scale));
             } else {
-                token.position.set(Pedro.txyVg(Pedro.gdx_vg(gdxPosition).toPosition(),token.size.scale(scale)).toPosition().rScale(scale).offset(new DoublePoint(-token.physicsHitbox.isElliptic__w/2.0,token.physicsHitbox.isElliptic__h/2.0)));
+                token.position.set(Pedro.txyVg(Pedro.gdx_vg(gdxPosition).toPosition(),token.size.scale(scale)).toPosition().rScale(scale).offset(new DoublePoint(-physicsHitbox.isElliptic__w/2.0,physicsHitbox.isElliptic__h/2.0)));
             }
             token.rotation = Math.toDegrees(Pedro.tangGdx(body.getAngle()));
         }
