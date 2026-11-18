@@ -1,5 +1,6 @@
 package org.py.vedge.ii;
 
+import org.py.vedge.data.JSONObject;
 import org.py.vedge.graphics.external.Graphics;
 import org.py.vedge.graphics.external.ModifiedGraphics;
 

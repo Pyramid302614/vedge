@@ -1,5 +1,6 @@
 package org.py.vedge.ii;
 
+import org.py.vedge.data.JSONObject;
 import org.py.vedge.infa.external.Window;
 import org.py.vedge.util.Sparry;
 
@@ -46,6 +47,24 @@ public class TokenGroup {
 
     public void forEach(Consumer<Token> consumer) {
         all.forEach(consumer);
+    }
+
+    // - Token object will include overriden methods
+    // - Json will include the following properties:
+    // * hitbox (four number array: [x,y,w,h])
+    // * hitbox_type ("rect","ellipse")
+    // * physics_hitbox (four number array: [x,y,w,h])
+    // * physics_hitbox_type ("rect","ellipse")
+    // * position (two number array: [x,y])
+    // * size (two number array: [w,h])
+    // * rotation (one number, in degrees)
+    public static Token make(Token token, JSONObject json) {
+        token.hitbox.setShape(json.get("hitbox_type").asString().equals("rect")?Polygon.rect(json.get("hitbox").asArray().get(0).asDouble(),json.get("hitbox").asArray().get(1).asDouble(),json.get("hitbox").asArray().get(2).asDouble(),json.get("hitbox").asArray().get(3).asDouble()):Polygon.ellipse(json.get("hitbox").asArray().get(0).asDouble(),json.get("hitbox").asArray().get(1).asDouble(),json.get("hitbox").asArray().get(2).asDouble(),json.get("hitbox").asArray().get(3).asDouble()));
+        token.hitbox.setShape(json.get("physics_hitbox_type").asString().equals("rect")?Polygon.rect(json.get("physics_hitbox").asArray().get(0).asDouble(),json.get("physics_hitbox").asArray().get(1).asDouble(),json.get("physics_hitbox").asArray().get(2).asDouble(),json.get("physics_hitbox").asArray().get(3).asDouble()):Polygon.ellipse(json.get("hitbox").asArray().get(0).asDouble(),json.get("hitbox").asArray().get(1).asDouble(),json.get("hitbox").asArray().get(2).asDouble(),json.get("hitbox").asArray().get(3).asDouble()));
+        token.position.set(json.get("position").asArray().get(0).asDouble(),json.get("position").asArray().get(1).asDouble());
+        token.size.set(json.get("size").asArray().get(0).asDouble(),json.get("size").asArray().get(1).asDouble());
+        token.rotation = json.get("rotation").asDouble();
+        return token;
     }
 
 }
