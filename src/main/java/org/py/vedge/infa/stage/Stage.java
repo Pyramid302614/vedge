@@ -258,15 +258,15 @@ public class Stage {
 
     public void addEntities(Entity... entities) {
         this.entities.addAll(entities);
-        tokens.add(entities);
+        tokens.addPrimaries(entities);
     }
     public void setPlayer(Player player) {
         this.player = player;
-        tokens.add(player);
+        tokens.addPrimaries(player);
     }
     public void setLevelMap(LevelMap levelMap) {
         this.levelMap = levelMap;
-        tokens.add(levelMap.asTokens());
+        tokens.addSecondaries(levelMap.asTokens());
     }
     public void enablePhysics(JSONObject physicsConfig) {
         physics = new Physics(physicsConfig);

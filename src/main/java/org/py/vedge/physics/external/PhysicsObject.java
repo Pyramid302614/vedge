@@ -1,6 +1,5 @@
 package org.py.vedge.physics.external;
 
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import org.py.vedge.data.JSONObject;
@@ -50,13 +49,13 @@ public class PhysicsObject extends PhysicsObjectAdapter {
         };
 
         Polygon hitbox = physicsHitbox.scale(scale);
+        Vector2 gdxPosition;
         if(!physicsHitbox.isElliptic) {
-            Vector2 gdxPosition = Pedro.vg_gdx(Pedro.txyGdx(token.position.scale(scale),token.size.scale(scale),token.rotation));
-            bodyDef.position.set(gdxPosition);
+            gdxPosition = Pedro.vg_gdx(Pedro.txyGdx(token.position.scale(scale), token.size.scale(scale), token.rotation));
         } else {
-            Vector2 gdxPosition = Pedro.vg_gdx(Pedro.txyGdx(token.position.rOffset(new DoublePoint(-physicsHitbox.isElliptic__w/2.0,token.physicsHitbox.isElliptic__h/2.0)).scale(scale),token.size.scale(scale),token.rotation));
-            bodyDef.position.set(gdxPosition);
+            gdxPosition = Pedro.vg_gdx(Pedro.txyGdx(token.position.rOffset(new DoublePoint(-physicsHitbox.isElliptic__w / 2.0, token.physicsHitbox.isElliptic__h / 2.0)).scale(scale), token.size.scale(scale), token.rotation));
         }
+        bodyDef.position.set(gdxPosition);
         bodyDef.angle = (float)Math.toRadians(token.rotation);
 
         Body body = world.createBody(bodyDef);

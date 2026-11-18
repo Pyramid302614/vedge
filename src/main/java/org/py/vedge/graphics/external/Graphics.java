@@ -4,11 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import org.py.vedge.graphics.Color;
 import org.py.vedge.graphics.GraphicsAdapter;
@@ -18,8 +16,6 @@ import org.py.vedge.ii.Meth;
 import org.py.vedge.ii.Polygon;
 import org.py.vedge.infa.external.Pedro;
 import org.py.vedge.infa.java.ErrorHandler;
-
-import java.util.Arrays;
 
 public class Graphics extends GraphicsAdapter {
 

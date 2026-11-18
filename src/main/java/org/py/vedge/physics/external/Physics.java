@@ -23,7 +23,7 @@ public class Physics extends PhysicsAdapter {
     private World world;
     private Box2DDebugRenderer debugRenderer;
 
-    private double stepSpeed = 5;
+    private final double stepSpeed = 5;
 
     static {
         // Only ever apply scale onto VG stuff after it's been converted from GDX

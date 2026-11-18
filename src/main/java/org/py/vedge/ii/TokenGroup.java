@@ -8,25 +8,25 @@ import java.util.function.Consumer;
 public class TokenGroup {
 
     public final Sparry<Token> all = new Sparry<>();
-//    private Sparry<Token> primary = new Sparry<>();
-//    private Sparry<Token> secondary = new Sparry<>();
-//
-//    public void addPrimaries(Sparry<Token> tokens) {
-//        all.addAll(tokens);
-//        primary.addAll(tokens);
-//    }
-//    public void addSecondaries(Sparry<Token> tokens) {
-//        all.addAll(tokens);
-//        secondary.addAll(tokens);
-//    }
-//    public void addPrimaries(Token... tokens) {
-//        all.addAll(tokens);
-//        primary.addAll(tokens);
-//    }
-//    public void addSecondaries(Token... tokens) {
-//        all.addAll(tokens);
-//        secondary.addAll(tokens);
-//    }
+    private Sparry<Token> primary = new Sparry<>();
+    private Sparry<Token> secondary = new Sparry<>();
+
+    public void addPrimaries(Sparry<Token> tokens) {
+        all.addAll(tokens);
+        primary.addAll(tokens);
+    }
+    public void addSecondaries(Sparry<Token> tokens) {
+        all.addAll(tokens);
+        secondary.addAll(tokens);
+    }
+    public void addPrimaries(Token... tokens) {
+        all.addAll(tokens);
+        primary.addAll(tokens);
+    }
+    public void addSecondaries(Token... tokens) {
+        all.addAll(tokens);
+        secondary.addAll(tokens);
+    }
     public void add(Sparry<Token> tokens) {
         all.addAll(tokens);
     }
