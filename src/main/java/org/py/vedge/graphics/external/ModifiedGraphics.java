@@ -2,6 +2,7 @@ package org.py.vedge.graphics.external;
 
 import org.py.vedge.graphics.Color;
 import org.py.vedge.graphics.GraphicsAdapter;
+import org.py.vedge.ii.DoublePoint;
 import org.py.vedge.ii.Meth;
 import org.py.vedge.ii.Polygon;
 
@@ -14,7 +15,8 @@ public class ModifiedGraphics extends GraphicsAdapter {
     private double xScale = 0;
     private double yScale = 0;
     private double transparency = 100;
-    private double rotation = 0; // Around 0,0 , in degrees
+    private double rotation = 0; // Around rotationOrigin, in degrees, + goes clockwise
+    private DoublePoint rotationOrigin = DoublePoint.HALF;
 
     public ModifiedGraphics(Graphics graphics) {
         g = graphics;
@@ -49,13 +51,23 @@ public class ModifiedGraphics extends GraphicsAdapter {
         return this;
     }
 
+    // Rotation origin, relative to position + scale
+    public ModifiedGraphics setOrigin(double x, double y) {
+        rotationOrigin = new DoublePoint(x,y);
+        return this;
+    }
+    public ModifiedGraphics setOrigin(DoublePoint point) {
+        rotationOrigin = point;
+        return this;
+    }
+
     private double tx(double x,double y) {
         if(rotation == 0 || (x == y && x == 0)) return Math.round(x*xScale+xOffset);
-        return Math.round(Meth.rotate(x,y,rotation).x()*xScale+xOffset);
+        return Math.round(Meth.rotate(x,y,rotation,rotationOrigin).x()*xScale+xOffset);
     } // Translate X
     private double ty(double x, double y) {
         if(rotation == 0 || (x == y && x == 0)) return Math.round(y*yScale+yOffset);
-        return Math.round(Meth.rotate(x,y,rotation).y()*yScale+yOffset);
+        return Math.round(Meth.rotate(x,y,rotation,rotationOrigin).y()*yScale+yOffset);
     } // Translate Y
     private double tw(double w) {
         return Math.round(w*xScale);
@@ -112,24 +124,24 @@ public class ModifiedGraphics extends GraphicsAdapter {
     }
 
     @Override
-    public void polygon(double[] allX, double[] allY) {
+    public void polygon(double[] allX, double[] allY,double angle) {
         double[] translatedX = new double[allX.length];
         double[] translatedY = new double[allY.length];
         for(int i = 0; i < translatedX.length; i++) {
             translatedX[i] = tx(allX[i],allY[i]);
-            translatedY[i] = tx(allX[i],allY[i]);
+            translatedY[i] = ty(allX[i],allY[i]);
         }
-        g.polygon(translatedX,translatedY);
+        g.polygon(translatedX,translatedY,angle);
     }
     @Override
-    public void polygon(Polygon polygon) {
+    public void polygon(Polygon polygon,double angle) {
         double[] translatedX = new double[polygon.length];
         double[] translatedY = new double[polygon.length];
         for(int i = 0; i < translatedX.length; i++) {
             translatedX[i] = tx(polygon.get(i).x(),polygon.get(i).y());
-            translatedY[i] = tx(polygon.get(i).x(),polygon.get(i).y());
+            translatedY[i] = ty(polygon.get(i).x(),polygon.get(i).y());
         }
-        g.polygon(translatedX,translatedY);
+        g.polygon(translatedX,translatedY,angle);
     }
 
     @Override
@@ -169,7 +181,7 @@ public class ModifiedGraphics extends GraphicsAdapter {
 
     @Override
     public String toString() {
-        return "ModifiedGraphics : x" + xOffset + " : y" + yOffset + " : w" + xScale + " : h" + yScale;
+        return "ModifiedGraphics : x" + xOffset + " : y" + yOffset + " : w" + xScale + " : h" + yScale + " : ang" + rotation;
     }
 
 }

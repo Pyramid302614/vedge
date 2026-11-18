@@ -69,8 +69,15 @@ public abstract class GraphicsAdapter {
 
     }
 
-    public abstract void polygon(double[] allX, double[] allY);
-    public abstract void polygon(Polygon polygon);
+    public void polygon(double[] allX, double[] allY) {
+        polygon(allX,allY,0);
+    }
+    public void polygon(Polygon polygon) {
+        polygon(polygon,0);
+    }
+
+    public abstract void polygon(double[] allX, double[] allY, double angle);
+    public abstract void polygon(Polygon polygon, double angle);
 
 //    public abstract void image(Image image, double x, double y, double w, double h);
 

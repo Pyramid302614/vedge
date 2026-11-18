@@ -19,6 +19,8 @@ import org.py.vedge.ii.Polygon;
 import org.py.vedge.infa.external.Pedro;
 import org.py.vedge.infa.java.ErrorHandler;
 
+import java.util.Arrays;
+
 public class Graphics extends GraphicsAdapter {
 
     public Graphics() {
@@ -54,53 +56,44 @@ public class Graphics extends GraphicsAdapter {
 
     @Override
     public void rect(double x, double y, double w, double h) {
-        ShapeRender(() -> shapeRenderer.rect((float)x,(float)(HEIGHT-y-h),(float)w,(float)h),
-            () -> {
-                // tl, tr, br, bl
-                shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-                shapeRenderer.rectLine((float)(x-strokeWeight/2),(float)(HEIGHT-y-h),(float)(x+w+strokeWeight/2),(float)(HEIGHT-y-h),(float)strokeWeight);
-                shapeRenderer.rectLine((float)(x+w),(float)(HEIGHT-y-h),(float)(x+w),(float)(HEIGHT-y),(float)strokeWeight);
-                shapeRenderer.rectLine((float)(x+w+strokeWeight/2),(float)(HEIGHT-y),(float)(x-strokeWeight/2),(float)(HEIGHT-y),(float)strokeWeight);
-                shapeRenderer.rectLine((float)x,(float)(HEIGHT-y),(float)x,(float)(HEIGHT-y-h),(float)strokeWeight);
-            });
+        rect(x,y,w,h,0);
     }
     @Override
     public void rect(double x, double y, double w, double h, double angle) {
-        if(angle == 0) {
-            rect(x,y,w,h);
-            return;
-        }
-        ShapeRender(() -> shapeRenderer.rect((float)x,(float)(HEIGHT-y-h),0,0,(float)w,(float)h,1,1,-(float)angle),
+        ShapeRender(() -> shapeRenderer.rect(Pedro.txGdx(x,y,w,h,angle),Pedro.tyGdx(x,y,w,h,angle),0,0,(float)w,(float)h,1,1,Pedro.tangGdx(angle)),
             () -> {
                 // tl, tr, br, bl
-                DoublePoint tl = new DoublePoint(x,y); // Origin
-                DoublePoint tr = Meth.rotate(x+w,y,angle,tl);
-                DoublePoint br = Meth.rotate(x+w,y+h,angle,tl);
-                DoublePoint bl = Meth.rotate(x,y+h,angle,tl);
+                DoublePoint origin = new DoublePoint(x+w/2,y+h/2);
+                DoublePoint tl = Meth.rotate(x,y,angle,origin);
+                DoublePoint tr = Meth.rotate(x+w,y,angle,origin);
+                DoublePoint br = Meth.rotate(x+w,y+h,angle,origin);
+                DoublePoint bl = Meth.rotate(x,y+h,angle,origin);
                 shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-                shapeRenderer.rectLine((float)(tl.x()-strokeWeight/2),(float)(HEIGHT-tl.y()-h),(float)(tr.x()+strokeWeight/2),(float)(HEIGHT-tr.y()-h),(float)strokeWeight);
-                shapeRenderer.rectLine((float)tr.x(),(float)(HEIGHT-tr.y()-h),(float)br.x(),(float)(HEIGHT-br.y()-h),(float)strokeWeight);
-                shapeRenderer.rectLine((float)(br.x()+strokeWeight/2),(float)(HEIGHT-br.y()-h),(float)(bl.x()-strokeWeight/2),(float)(HEIGHT-bl.y()-h),(float)strokeWeight);
-                shapeRenderer.rectLine((float)bl.x(),(float)(HEIGHT-bl.y()-h),(float)tl.x(),(float)(HEIGHT-tl.y()-h),(float)strokeWeight);
+                shapeRenderer.rectLine(Pedro.txGdx(tl.x()-strokeWeight/2),Pedro.tyGdx(tl.y()),Pedro.txGdx(tr.x()+strokeWeight/2),Pedro.tyGdx(tr.y()),(float)strokeWeight);
+                shapeRenderer.rectLine(Pedro.txGdx(tr.x()),Pedro.tyGdx(tr.y()),Pedro.txGdx(br.x()),Pedro.tyGdx(br.y()),(float)strokeWeight);
+                shapeRenderer.rectLine(Pedro.txGdx(br.x()+strokeWeight/2),Pedro.tyGdx(br.y()),Pedro.txGdx(bl.x()-strokeWeight/2),Pedro.tyGdx(bl.y()),(float)strokeWeight);
+                shapeRenderer.rectLine(Pedro.txGdx(bl.x()),Pedro.tyGdx(bl.y()),Pedro.txGdx(tl.x()),Pedro.tyGdx(tl.y()),(float)strokeWeight);
             });
     }
 
     @Override
     public void ellipse(double x, double y, double w, double h, double angle) {
-        ShapeRender(() -> shapeRenderer.ellipse((float)x,(float)(HEIGHT-y-h),(float)w,(float)h,-(float)angle));
+        ShapeRender(() -> shapeRenderer.ellipse(Pedro.txGdx(x,y,w,h,0),Pedro.tyGdx(x,y,w,h,0),(float)w,(float)h,Pedro.tangGdx(angle)));
     }
 
     @Override
-    public void polygon(double[] allX, double[] allY) {
+    public void polygon(double[] allX, double[] allY, double angle) {
         if(allX.length != allY.length) {
             ErrorHandler.silent("Invalid polygon render: allX.length doesn't match allY.length");
             return;
         }
         if(allX.length == 0) return;
+        DoublePoint origin = new Polygon(allX,allY).center(); // Origin of rotation
         float[] vertices = new float[allX.length*2];
         for(int i = 0; i < allX.length; i++) {
-            vertices[i*2] = (float)allX[i];
-            vertices[i*2+1] = HEIGHT-(float)allY[i];
+            DoublePoint v = Meth.rotate(new DoublePoint(allX[i],allY[i]),Math.toRadians(angle),origin);
+            vertices[i*2] = Pedro.txGdx(v.x());
+            vertices[i*2+1] = Pedro.tyGdx(v.y());
         }
         ShapeRender(() -> shapeRenderer.polygon(vertices),
             () -> {
@@ -119,16 +112,18 @@ public class Graphics extends GraphicsAdapter {
             });
     }
     @Override
-    public void polygon(Polygon polygon) {
+    public void polygon(Polygon polygon, double angle) {
         if(polygon.isElliptic) {
             ellipse(polygon.isElliptic__x,polygon.isElliptic__y,polygon.isElliptic__w,polygon.isElliptic__h);
             return;
         }
         if(polygon.length == 0) return;
+        DoublePoint origin = polygon.center(); // Origin of rotation
         float[] vertices = new float[polygon.length*2];
         for(int i = 0; i < polygon.length; i++) {
-            vertices[i*2] = (float)polygon.get(i).x();
-            vertices[i*2+1] = HEIGHT-(float)polygon.get(i).y();
+            DoublePoint v = Meth.rotate(new DoublePoint(polygon.get(i).x(),polygon.get(i).y()),Math.toRadians(angle),origin);
+            vertices[i*2] = Pedro.txGdx(v.x());
+            vertices[i*2+1] = Pedro.tyGdx(v.y());
         }
         ShapeRender(() -> shapeRenderer.polygon(vertices),
             () -> {

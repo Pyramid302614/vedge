@@ -4,10 +4,7 @@ import com.badlogic.gdx.math.EarClippingTriangulator;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.utils.ShortArray;
-import org.py.vedge.ii.Dimension;
-import org.py.vedge.ii.DoublePoint;
-import org.py.vedge.ii.Polygon;
-import org.py.vedge.ii.Position;
+import org.py.vedge.ii.*;
 import org.py.vedge.infa.java.ErrorHandler;
 
 public class Pedro {
@@ -83,20 +80,24 @@ public class Pedro {
     public static float txGdx(double x) {
         return (float) x;
     }
-    public static float txGdx(double x, Dimension size) {
-        return (float) x;
+    public static float txGdx(double x, double y, double w, double h, double rotation) {
+        if(rotation == 0) return txGdx(x);
+        else return txGdx(Meth.rotate(x+w*0.5-Math.hypot(w,h)/2,y+h*0.5,rotation-Math.toDegrees(Math.atan2(h,w)),new DoublePoint(x+w*0.5,y+h*0.5)).x());
+//        else return txGdx(Meth.rotate(x,y+h,rotation,new DoublePoint(x,y)).x());
     }
     public static float tyGdx(double y) {
         return (float) (Window.vg.size.h - y);
     }
-    public static float tyGdx(double y, Dimension size) {
-        return (float) (Window.vg.size.h - y - size.h);
+    public static float tyGdx(double x, double y, double w, double h, double rotation) {
+        if(rotation == 0) return tyGdx(y+h);
+        else return tyGdx(Meth.rotate(x+w*0.5-Math.hypot(w,h)/2,y+h*0.5,rotation-Math.toDegrees(Math.atan2(h,w)),new DoublePoint(x+w*0.5,y+h*0.5)).y());
+//        else return tyGdx(Meth.rotate(x,y+h,rotation,new DoublePoint(x,y)).y());
     }
     public static DoublePoint txyGdx(DoublePoint dp) {
         return new DoublePoint(txGdx(dp.x()),tyGdx(dp.y()));
     }
-    public static DoublePoint txyGdx(Position position, Dimension size) {
-        return new DoublePoint(txGdx(position.x,size),tyGdx(position.y,size));
+    public static DoublePoint txyGdx(Position position, Dimension size, double rotation) {
+        return new DoublePoint(txGdx(position.x,position.y,size.w,size.h,rotation),tyGdx(position.x,position.y,size.w,size.h,rotation));
     }
     public static com.badlogic.gdx.math.Vector2 tdGdx(double x, double y) {
         return new com.badlogic.gdx.math.Vector2(
@@ -111,23 +112,29 @@ public class Pedro {
         return (float)-ang;
     }
 
-    public static float txVg(double x) {
+    public static double txVg(double x) {
         return (float) x;
     }
-    public static float txVg(double x, Dimension size) {
-        return (float) x;
+    public static double txVg(double x, double y, double w, double h, double vgRotation) {
+        if(vgRotation == 0) return txVg(x);
+        else return Meth.rotate(txVg(x)+Math.hypot(w,h)/2,tyVg(y),vgRotation-Math.toDegrees(Math.atan2(h,w)),new DoublePoint(txVg(x),tyVg(y))).x()-w/2;
+//        else return Meth.rotate(txVg(x)+w/2,tyVg(y)+h,vgRotation,txyVg(new DoublePoint(x,y))).x()-w/2;
+//        else return Meth.rotate(txVg(x),tyVg(y)-size.h,vgRotation,new DoublePoint(txVg(x),tyVg(y))).x();
     }
-    public static float tyVg(double y) {
-        return (float) (Window.vg.size.h - y);
+    public static double tyVg(double y) {
+        return Window.vg.size.h - y;
     }
-    public static float tyVg(double y, Dimension size) {
-        return (float) (Window.vg.size.h - y - size.h);
+    public static double tyVg(double x, double y, double w, double h, double vgRotation) {
+        if(vgRotation == 0) return tyVg( y+h);
+        else return Meth.rotate(txVg(x)+Math.hypot(w,h)/2,tyVg(y),vgRotation-Math.toDegrees(Math.atan2(h,w)),new DoublePoint(txVg(x),tyVg(y))).y()-h/2;
+//        else return Meth.rotate(txVg(x)+w/2,tyVg(y)+h,vgRotation,txyVg(new DoublePoint(x,y))).y()-h/2;
+//        else return Meth.rotate(txVg(x),tyVg(y)-size.h,vgRotation,new DoublePoint(txVg(x),tyVg(y))).y();
     }
     public static DoublePoint txyVg(DoublePoint dp) {
         return new DoublePoint(txVg(dp.x()),tyVg(dp.y()));
     }
-    public static DoublePoint txyVg(Position position, Dimension size) {
-        return new DoublePoint(txVg(position.x,size),tyVg(position.y,size));
+    public static DoublePoint txyVg(Position position, Dimension size, double vgRotation) {
+        return new DoublePoint(txVg(position.x,position.y,size.w,size.h,vgRotation),tyVg(position.x,position.y,size.w,size.h,vgRotation));
     }
     public static DoublePoint tdVg(float x, float y) {
         return new DoublePoint(

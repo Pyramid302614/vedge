@@ -45,17 +45,11 @@ public class Token {
         return this;
     }
 
-    public double TCX(double x) {
-        return position.x + x;
+    public double TCX(double x, double y) {
+        return position.x + (Meth.rotate(new DoublePoint(x*size.w,y*size.h),-rotation,DoublePoint.HALF).x());
     }
-    public double TCY(double y) {
-        return position.y + y;
-    }
-    public double TRX(double x) {
-        return x - position.x;
-    }
-    public double TRY(double y) {
-        return y - position.y;
+    public double TCY(double x, double y) {
+        return position.y + (Meth.rotate(new DoublePoint(x*size.w,y*size.h),-rotation,DoublePoint.HALF).y());
     }
 
     // Used for when you are updating the position from the game code

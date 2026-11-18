@@ -3,10 +3,7 @@ package org.py.vedge.infa.stage;
 import org.py.vedge.data.JSONObject;
 import org.py.vedge.graphics.external.Graphics;
 import org.py.vedge.graphics.external.ModifiedGraphics;
-import org.py.vedge.ii.Entity;
-import org.py.vedge.ii.LevelMap;
-import org.py.vedge.ii.Player;
-import org.py.vedge.ii.TokenGroup;
+import org.py.vedge.ii.*;
 import org.py.vedge.ii.elements.Element;
 import org.py.vedge.ii.elements.ElementGroup;
 import org.py.vedge.infa.Debug;
@@ -150,6 +147,8 @@ public class Stage {
     private final ElementGroup elements = new ElementGroup();
     private final String name;
 
+    private Runnable everyFrame = () -> {};
+
     private StageTransition appliedTransition = StageTransition.NONE;
 
     public Stage(String name) {
@@ -196,8 +195,8 @@ public class Stage {
                 double[] X = new double[e.hitbox.length];
                 double[] Y = new double[e.hitbox.length];
                 for(int i = 0; i < e.hitbox.length; i++) {
-                    X[i] = e.TCX(e.hitbox.get(i).x());
-                    Y[i] = e.TCY(e.hitbox.get(i).y());
+                    X[i] = e.TCX(e.hitbox.get(i).x(),e.hitbox.get(i).y());
+                    Y[i] = e.TCY(e.hitbox.get(i).x(),e.hitbox.get(i).y());
                 }
                 g.polygon(X,Y);
             });
@@ -207,13 +206,16 @@ public class Stage {
             g.strokeWeight(5);
             entities.forEach(e -> {
                 if(e.physicsHitbox != null) {
-                    double[] X = new double[e.physicsHitbox.length];
-                    double[] Y = new double[e.physicsHitbox.length];
-                    for(int i = 0; i < e.physicsHitbox.length; i++) {
-                        X[i] = e.TCX(e.physicsHitbox.get(i).x());
-                        Y[i] = e.TCY(e.physicsHitbox.get(i).y());
+                    Polygon physicsHitbox = e.physicsHitbox; // Scales it in with this lower code
+                    double[] X = new double[physicsHitbox.length];
+                    double[] Y = new double[physicsHitbox.length];
+                    for(int i = 0; i < physicsHitbox.length; i++) {
+                        // Accounts for scaling
+                        X[i] = e.TCX(physicsHitbox.get(i).x(),physicsHitbox.get(i).y());
+                        Y[i] = e.TCY(physicsHitbox.get(i).x(),physicsHitbox.get(i).y());
                     }
-                    g.polygon(X,Y);
+                    g.rect(e.position.x,e.position.y,10,10);
+//                    g.polygon(X,Y);
                 }
             });
         }
@@ -289,10 +291,14 @@ public class Stage {
         this.tokens.add(elements);
     }
 
+    public void everyFrame(Runnable runnable) {
+        everyFrame = runnable;
+    }
 
 
 
     private void tick() {
+        everyFrame.run();
         if(levelMap != null) tickLevelMap();
         if(entities.length > 0) tickEntities();
         if(player != null) tickPlayer();

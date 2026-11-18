@@ -51,10 +51,10 @@ public class PhysicsObject extends PhysicsObjectAdapter {
 
         Polygon hitbox = physicsHitbox.scale(scale);
         if(!physicsHitbox.isElliptic) {
-            Vector2 gdxPosition = Pedro.vg_gdx(Pedro.txyGdx(token.position.scale(scale),token.size.scale(scale)));
+            Vector2 gdxPosition = Pedro.vg_gdx(Pedro.txyGdx(token.position.scale(scale),token.size.scale(scale),token.rotation));
             bodyDef.position.set(gdxPosition);
         } else {
-            Vector2 gdxPosition = Pedro.vg_gdx(Pedro.txyGdx(token.position.rOffset(new DoublePoint(-physicsHitbox.isElliptic__w/2.0,token.physicsHitbox.isElliptic__h/2.0)).scale(scale),token.size.scale(scale)));
+            Vector2 gdxPosition = Pedro.vg_gdx(Pedro.txyGdx(token.position.rOffset(new DoublePoint(-physicsHitbox.isElliptic__w/2.0,token.physicsHitbox.isElliptic__h/2.0)).scale(scale),token.size.scale(scale),token.rotation));
             bodyDef.position.set(gdxPosition);
         }
         bodyDef.angle = (float)Math.toRadians(token.rotation);
@@ -99,12 +99,16 @@ public class PhysicsObject extends PhysicsObjectAdapter {
         if(body == null) return;
         Vector2 gdxPosition = body.getPosition(); // Around center (fml) EDIT: it's actually not
         if(body != null) {
-            if(!physicsHitbox.isElliptic) {
-                token.position.set(Pedro.txyVg(Pedro.gdx_vg(gdxPosition).toPosition(),token.size.scale(scale)).toPosition().rScale(scale));
-            } else {
-                token.position.set(Pedro.txyVg(Pedro.gdx_vg(gdxPosition).toPosition(),token.size.scale(scale)).toPosition().rScale(scale).offset(new DoublePoint(-physicsHitbox.isElliptic__w/2.0,physicsHitbox.isElliptic__h/2.0)));
-            }
             token.rotation = Math.toDegrees(Pedro.tangGdx(body.getAngle()));
+            if(!physicsHitbox.isElliptic) {
+                token.position.set(Pedro.txyVg(Pedro.gdx_vg(gdxPosition).toPosition(),token.size.scale(scale),token.rotation).toPosition().rScale(scale));
+            } else {
+                gdxPosition.sub(
+                    (float)(physicsHitbox.isElliptic__w/2.0*scale.x()),
+                    -(float)(physicsHitbox.isElliptic__h/2.0*scale.y())
+                );
+                token.position.set(Pedro.txyVg(Pedro.gdx_vg(gdxPosition)).toPosition().rScale(scale));
+            }
         }
     }
 

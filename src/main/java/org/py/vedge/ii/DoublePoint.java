@@ -56,6 +56,7 @@ public final class DoublePoint {
 
 
     public static final DoublePoint ZERO = new DoublePoint(0,0);
+    public static final DoublePoint HALF = new DoublePoint(0.5,0.5);
 
 
 }

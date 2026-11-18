@@ -3,14 +3,16 @@ package org.py.vedge.ii;
 public class Meth {
 
     // Around (0,0)
-    public static DoublePoint rotate(DoublePoint point, double radians) {
-        return rotate(point.x(),point.y(),radians);
+    public static DoublePoint rotate(DoublePoint point, double degrees) {
+        return rotate(point.x(),point.y(),degrees);
     }
     public static DoublePoint rotate(double x, double y, double degrees) {
+        if(degrees == 0) return new DoublePoint(x,y);
         double hypotenuse = Math.hypot(x,y);
+        double angle = Math.atan2(x,y);
         return new DoublePoint(
-                Math.sin(Math.toRadians(degrees))*hypotenuse,
-                Math.cos(Math.toRadians(degrees))*hypotenuse
+                Math.sin(angle-Math.toRadians(degrees))*hypotenuse,
+                Math.cos(angle-Math.toRadians(degrees))*hypotenuse
         );
     }
     public static DoublePoint rotate(DoublePoint point, double degrees, DoublePoint origin) {

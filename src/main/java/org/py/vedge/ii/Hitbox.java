@@ -19,7 +19,7 @@ public class Hitbox extends Polygon {
     }
     public Sparry<DoublePoint> getCanvasPoints() {
         Sparry<DoublePoint> result = new Sparry<>();
-        this.forEach(i -> result.add(new DoublePoint(owner.TCX(i.x()),owner.TCY(i.y()))));
+        this.forEach(i -> result.add(new DoublePoint(owner.TCX(i.x(),i.y()),owner.TCY(i.x(),i.y()))));
         return result;
     }
     public void setShape(Polygon polygon) {

@@ -13,6 +13,11 @@ public class Polygon extends Sparry<DoublePoint> {
     public Polygon(DoublePoint... points) {
         addAll(points);
     }
+    public Polygon(double[] allX, double[] allY) {
+        for(int i = 0; i < Math.min(allX.length,allY.length); i++) {
+            add(new DoublePoint(allX[i],allY[i]));
+        }
+    }
 
     // Returns new object
     public Polygon scale(DoublePoint scale) {
